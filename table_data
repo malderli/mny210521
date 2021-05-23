@@ -1,0 +1,44 @@
+TABLE_CARS
+    ID: 0
+    FIELDS:
+        ID          int
+        MODEL       string
+        YEAR        string
+        COLOR       string
+        TECH        string
+        EQUIP       string
+        PRICE       int
+        COMMENT     string
+
+TABLE_MANAGERS
+    ID: 1
+    FIELDS:
+        ID          int
+        NAME        string
+        BRITHDATE   string
+        SUMDEALS    int
+        TOTALEARN   int
+        COMMENT     string
+
+TABLE_SALES
+    ID: 2
+    FIELDS:
+        ID          int
+        DATE        string
+        CARID       int
+        COMMENT     short
+
+TABLE_CLIENTS
+    ID: 3
+    FIELDS
+        ID          int
+        NAME        string
+        BRITHDATE   string
+        PASSDATA    string
+        PHONE       int
+        STAT        bool
+        DISCOUNT    short
+        COMMENT     string
+
+
+
