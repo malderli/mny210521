@@ -1,5 +1,6 @@
 #pragma once
 
+
 #define TABLE_CARS      0
 #define TABLE_MANAGERS  1
 #define TABLE_SALES     2
