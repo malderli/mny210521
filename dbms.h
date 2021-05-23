@@ -2,22 +2,27 @@
 #include <fstream>
 #include "constants.h"
 #include <string>
-
+#include <vector>
 
 using namespace std;
 
 class DBMS
 {
 private:
-    bool INITDB(string dbFolder);
+    bool initDB(string dbFolder);
+    void readDB();
+    void saveDB();
 
-    fstream tables[4];
+    fstream treader[NUM_OF_TABLES];
+    vector<rowData> tdata[NUM_OF_TABLES];
 
 public:
-    DBMS(string dbFolder, bool isInit = true);
+    string dbPath;
+
+    DBMS(string dbFolder, bool isInit);
 
     rowData GET(rowData data);
-    bool ADD(rowData data);
+    void ADD(rowData data);
     bool REMOVE(rowData data);
 };
 
