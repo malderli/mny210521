@@ -41,7 +41,8 @@ void DBMS::readDB()
 
             for (int col = dbTableSize[tid] - 1; col >= 0; col++)
             {
-                getline(treader[tid], str);
+                if (!getline(treader[tid], str))
+                    continue;
 
                 if ((dbTableStruct[tid] >> col) & 0x01)
                     currData->ints.push_back(stoi(str));
@@ -74,11 +75,11 @@ vector<rowData *> DBMS::GET(rowData toGet)
 
     if (toGet.tableID != TABLE_SALES)
         for (rowData *currData : tdata[toGet.tableID])
-            if (currData->strings[0] == toGet.strings[0])
+            if ((currData->strings.size() > 0) && (currData->strings[0] == toGet.strings[0]))
                 res.push_back(currData);
     else
         for (rowData *currData : tdata[toGet.tableID])
-            if (currData->ints[0] == toGet.ints[0])
+            if ((currData->ints.size() > 0) && (currData->ints[0] == toGet.ints[0]))
                 res.push_back(currData);
 
     return res;
