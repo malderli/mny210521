@@ -19,6 +19,7 @@ struct BaseData Interface::getInitData()
 
     struct BaseData outData;
     outData.isInit = ((baseExist == 'Y') || (baseExist == 'y')) ? true : false;
+    DEBUGER("is init: ", outData.isInit)
     cout << "Type data base directory: ";
     cin >> outData.path;
     return outData;
@@ -32,20 +33,8 @@ void Interface::setDb(DBMS *base)
 
 void Interface::runDataBase()
 {
-    /*
-    1 select model name
-    2 select manager name
-    3 select deal id
-    4 select client name
-
-    5 - 8 insert
-
-    9-12 delete
-
-
-    */
     string cmdTypes[3] = {"SELECT", "INSERT or UPDATE", "DELETE"};
-    char comand; // = "end";
+    char comand;
     bool flagMenu = true;
     bool flagReset = false;
     short cmdType = 0;
@@ -322,12 +311,37 @@ void Interface::_remove(short curr)
         cout << "! invalid argument !\n";
         return;
     }
+    if (curr != 2)
+    {
+        cout << "input data for detect remove (name/model of car): ";
+        string str;
+        cin >> str;
+        req.strings.push_back(str);
+    }
+    else
+    {
+        int data = _getNumber("input id of deal (integer): ");
+        req.ints.push_back(data);
+    }
     bool result = db->REMOVE(req);
     cout << "result: " << result << "\n";
 }
 void Interface::_help()
 {
-    cout << "HELP HELP HELP";
+    cout << "2 sections of menu:\n";
+    cout << "First section:\n";
+    cout << "comand '1' - SELECT\n";
+    cout << "comand '2' - INSERT or UPDATE\n";
+    cout << "comand '3' - DELETE\n-----------------------------\n";
+    cout << "Second section:\n";
+    cout << "comand '1' - CAR\n";
+    cout << "comand '1' - MANAGER\n";
+    cout << "comand '1' - SALES\n";
+    cout << "comand '1' - CLIENTS\n";
+    cout << "-----------------------------------\n";
+    cout << "Common logic: first of all choice type of comand (1 select, 2 insert/update, 3 delete)";
+    cout << "after that, choice table (1 cars, 2 managers, 3 sales, 4 clients)\n";
+    cout << "___________________________________\n";
 }
 
 bool Interface::_is_number(const std::string &s)
