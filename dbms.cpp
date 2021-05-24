@@ -74,9 +74,11 @@ vector<rowData *> DBMS::GET(rowData toGet)
     vector<rowData *> res;
 
     if (toGet.tableID != TABLE_SALES)
+    {
         for (rowData *currData : tdata[toGet.tableID])
             if ((currData->strings.size() > 0) && (currData->strings[0] == toGet.strings[0]))
                 res.push_back(currData);
+    }
     else
         for (rowData *currData : tdata[toGet.tableID])
             if ((currData->ints.size() > 0) && (currData->ints[0] == toGet.ints[0]))
@@ -95,10 +97,10 @@ bool DBMS::REMOVE(rowData data)
         for (int jnx = 0; jnx < tdata[data.tableID].size(); jnx++)
             if (tdata[data.tableID][jnx]->strings[0] == data.strings[0])
                 tdata[data.tableID].erase(tdata[data.tableID].begin() + jnx);
-    else
-        for (int jnx = 0; jnx < tdata[data.tableID].size(); jnx++)
-            if (tdata[data.tableID][jnx]->ints[0] == data.ints[0])
-                tdata[data.tableID].erase(tdata[data.tableID].begin() + jnx);
+            else
+                for (int jnx = 0; jnx < tdata[data.tableID].size(); jnx++)
+                    if (tdata[data.tableID][jnx]->ints[0] == data.ints[0])
+                        tdata[data.tableID].erase(tdata[data.tableID].begin() + jnx);
 
     return startSize == tdata[data.tableID].size();
 }

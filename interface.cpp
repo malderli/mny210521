@@ -328,6 +328,7 @@ void Interface::_remove(short curr)
 }
 void Interface::_help()
 {
+    cout << "_____________help_________________\n";
     cout << "2 sections of menu:\n";
     cout << "First section:\n";
     cout << "comand '1' - SELECT\n";
