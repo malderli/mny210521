@@ -24,6 +24,7 @@ public:
     string dbPath;
 
     DBMS(string dbFolder, bool isInit);
+    ~DBMS();
 
     vector<rowData *> GET(rowData toGet);
     void ADD(rowData data);

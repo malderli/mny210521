@@ -25,6 +25,11 @@ DBMS::DBMS(string dbFolder, bool isInit)
         readDB();
 }
 
+DBMS::~DBMS()
+{
+    saveDB();
+}
+
 void DBMS::readDB()
 {
     string str;
@@ -34,13 +39,11 @@ void DBMS::readDB()
         tdata[i].clear();
 
     for (int tid = 0; tid < NUM_OF_TABLES; tid++)
-        while (!treader[tid].eof())
-        {
+        while (!treader[tid].eof()) {
             currData = new rowData();
             currData->tableID = tid;
 
-            for (int col = dbTableSize[tid] - 1; col >= 0; col++)
-            {
+            for (int col = dbTableSize[tid] - 1; col >= 0; col++) {
                 if (!getline(treader[tid], str))
                     continue;
 
@@ -55,8 +58,7 @@ void DBMS::readDB()
 void DBMS::saveDB()
 {
     for (int tid = 0; tid < NUM_OF_TABLES; tid++)
-        for (rowData *currData : tdata[tid])
-        {
+        for (rowData *currData : tdata[tid]) {
             for (int i : currData->ints)
                 treader[tid] << i << '\n';
             for (string s : currData->strings)
@@ -73,8 +75,7 @@ vector<rowData *> DBMS::GET(rowData toGet)
 {
     vector<rowData *> res;
 
-    if (toGet.tableID != TABLE_SALES)
-    {
+    if (toGet.tableID != TABLE_SALES) {
         for (rowData *currData : tdata[toGet.tableID])
             if ((currData->strings.size() > 0) && (currData->strings[0] == toGet.strings[0]))
                 res.push_back(currData);
