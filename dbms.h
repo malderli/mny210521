@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include "constants.h"
@@ -19,4 +20,3 @@ public:
     bool ADD(rowData data);
     bool REMOVE(rowData data);
 };
-
