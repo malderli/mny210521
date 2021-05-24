@@ -16,13 +16,13 @@ DBMS::DBMS(string dbFolder, bool isInit)
     // Readers opening
     dbPath = dbFolder;
 
-    treader[TABLE_CARS].open(dbFolder + TABLE_CARS_SPATH, ios::out);
-    treader[TABLE_MANAGERS].open(dbFolder + TABLE_MANAGERS_SPATH, ios::app);
-    treader[TABLE_SALES].open(dbFolder + TABLE_SALES_SPATH, ios::out);
-    treader[TABLE_CLIENTS].open(dbFolder + TABLE_CLIENTS_SPATH, ios::out);
-
     if (isInit)
         readDB();
+
+    treader[TABLE_CARS].open(dbPath + TABLE_CARS_SPATH, ios::out);
+    treader[TABLE_MANAGERS].open(dbPath + TABLE_MANAGERS_SPATH, ios::out);
+    treader[TABLE_SALES].open(dbPath + TABLE_SALES_SPATH, ios::out);
+    treader[TABLE_CLIENTS].open(dbPath + TABLE_CLIENTS_SPATH, ios::out);
 }
 
 DBMS::~DBMS()
@@ -37,6 +37,11 @@ void DBMS::readDB()
 {
     string str;
     rowData *currData;
+
+    treader[TABLE_CARS].open(dbPath + TABLE_CARS_SPATH, ios::in);
+    treader[TABLE_MANAGERS].open(dbPath + TABLE_MANAGERS_SPATH, ios::in);
+    treader[TABLE_SALES].open(dbPath + TABLE_SALES_SPATH, ios::in);
+    treader[TABLE_CLIENTS].open(dbPath + TABLE_CLIENTS_SPATH, ios::in);
 
     for (int tid = 0; tid < NUM_OF_TABLES; tid++) {
         tdata[tid].clear();
@@ -61,6 +66,9 @@ void DBMS::readDB()
             tdata[tid].push_back(currData);
         }
     }
+
+    for (int tid = 0; tid < NUM_OF_TABLES; tid++)
+        treader[tid].close();
 }
 
 void DBMS::saveDB()
