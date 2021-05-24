@@ -2,13 +2,15 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "C/C++: g++-7 build active file",
-            "command": "/usr/bin/g++-7",
+            "label": "mybuild",
+            "command": "g++",
             "args": [
                 "-g",
-                "${file}",
+                "main.cpp",
+                "interface.cpp",
+                "dbms.cpp", 
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "main"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
