@@ -27,7 +27,7 @@ void DBMS_test(DBMS *db)
 
     //db->ADD(tdata);
     //res = db->GET(toget);
-    
+
     db->REMOVE(toget);
 
     cout << res.size() << "\n";
@@ -36,18 +36,18 @@ void DBMS_test(DBMS *db)
 int main()
 {
     cin.sync_with_stdio(false);
-    /*
+
     Interface interface;
+    /*
     struct BaseData initDb = interface.getInitData();
     DBMS db(initDb.path, initDb.isInit);
-         */
+    */
 
     DBMS db("/media/user/DATA/projects/mny210521/bb", 1);
 
-    /*
     interface.setDb(&db);
     interface.runDataBase();
-    */
-    DBMS_test(&db);
+
+    //DBMS_test(&db);
     return 0;
 }
