@@ -1,29 +1,28 @@
 #include "interface.h"
 //#define DEBUGER(str, data) cout << "\n<<" << str << "|" << data << ">>\n";
 #define DEBUGER(str, data)
-Interface::Interface(/* args */)
+
+Interface::Interface()
 {
     db = nullptr;
-}
-
-Interface::~Interface()
-{
 }
 
 struct BaseData Interface::getInitData()
 {
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
     cout << "Hello, let's start\nDo you already have data base(y/N): ";
     char baseExist = std::cin.get();
     DEBUGER("test", baseExist)
-    //cout << '\n';
 
     struct BaseData outData;
     outData.isInit = ((baseExist == 'Y') || (baseExist == 'y')) ? true : false;
     DEBUGER("is init: ", outData.isInit)
+    
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
     cout << "Type data base directory: ";
     cin >> outData.path;
     return outData;
@@ -37,12 +36,13 @@ void Interface::setDb(DBMS *base)
 
 void Interface::runDataBase()
 {
-    string cmdTypes[3] = {"SELECT", "INSERT or UPDATE", "DELETE"};
+    string cmdTypes[3] = { "SELECT", "INSERT or UPDATE", "DELETE" };
     char comand;
     bool flagMenu = true;
     bool flagReset = false;
     short cmdType = 0;
     short cmdCertain = 0;
+    
     do
     {
         if (flagMenu)
@@ -58,26 +58,32 @@ void Interface::runDataBase()
                 cout << "\n<1 comand: SELECT chosen>\n";
                 cmdType = 0;
                 break;
+
             case '2':
                 flagMenu = false;
                 cout << "\n<2 comand: INSERT or UPDATE chosen>\n";
                 cmdType = 1;
                 break;
+
             case '3':
                 flagMenu = false;
                 cout << "\n<3 comand: DELETE chosen>\n";
                 cmdType = 2;
                 break;
+
             case '?':
                 cout << "\n<? comand: HELP chosen>\n"; ////////////////////////////////////////////////////
                 _help();
                 break;
+
             case 'e':
                 cout << "\n<exit comand>\n";
                 break;
+
             case 's':
                 cout << "you are already in default menu\n";
                 break;
+
             default:
                 cout << "\nNOT a comand. Type '?' or any other comand\n";
                 break;
@@ -87,10 +93,12 @@ void Interface::runDataBase()
         {
             if (std::cin.rdbuf()->in_avail() > 0)
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                
             cout << "Second menu\nFirst choise: " << cmdType + 1
                  << " <" << cmdTypes[cmdType] << '>'
                  << "\n - 1 Model\n - 2 Manager\n - 3 Deal\n - 3 Client\nInput comand (or type '?'): ";
             cin >> comand;
+
             switch (comand)
             {
             case '1':
@@ -158,7 +166,7 @@ void Interface::runDataBase()
             if (std::cin.rdbuf()->in_avail() > 0)
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             cout << "Are you shure? type 'n' if you want to stay in or any other key: ";
-            cin >> comand;
+            comand = std::cin.get();
             comand = ((comand == 'n') || (comand == 'N')) ? 'n' : 'e';
         }
 
@@ -175,24 +183,30 @@ void Interface::_select(short curr)
     struct rowData req;
 
     DEBUGER("SELECT COMAND in func", "")
+
     switch (curr)
     {
     case 0: //model
         req.tableID = TABLE_CARS;
         break;
+
     case 1: //manager
         req.tableID = TABLE_MANAGERS;
         break;
+
     case 2: //deal
         req.tableID = TABLE_SALES;
         break;
+
     case 3: //client
         req.tableID = TABLE_CLIENTS;
         break;
+
     default:
         cout << "<! invalid argument !>\n";
         return;
     }
+
     if (curr != 2)
     {
         if (std::cin.rdbuf()->in_avail() > 0)
@@ -213,45 +227,53 @@ void Interface::_select(short curr)
     {
         cout << "\nNo such data in base\n";
     }
+
     for (rowData *oneBlock : result)
     {
+        int padding = 17;
+        int paddNext = 15;
         cout << "_________block data__________\n\n";
+
         switch (oneBlock->tableID)
         {
         case TABLE_CARS:
-            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
-            cout << "PRICE:\t\t" << oneBlock->ints[1] << "||\n";
-            cout << "MODEL:\t\t" << oneBlock->strings[0] << "||\n";
-            cout << "YEAR:\t\t" << oneBlock->strings[1] << "||\n";
-            cout << "COLOR:\t\t" << oneBlock->strings[2] << "||\n";
-            cout << "TECH CHAR:\t\t" << oneBlock->strings[3] << "||\n";
-            cout << "EQUIPMENT:\t\t" << oneBlock->strings[4] << "||\n";
-            cout << "COMMENT:\t\t" << oneBlock->strings[5] << "||\n";
+            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "PRICE: " << "<" << std::setw(paddNext)<< oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "MODEL: " << "<" << std::setw(paddNext)<< oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "YEAR: " << "<" << std::setw(paddNext)<< oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "COLOR: " << "<" << std::setw(paddNext)<< oneBlock->strings[2] << ">||\n";
+            cout << std::setw(padding) << "TECH CHAR: " << "<" << std::setw(paddNext)<< oneBlock->strings[3] << ">||\n";
+            cout << std::setw(padding) << "EQUIPMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[4] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[5] << ">||\n";
             break;
+
         case TABLE_MANAGERS:
-            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
-            cout << "SUM of DEALS:\t\t" << oneBlock->ints[1] << "||\n";
-            cout << "total erned money:\t\t" << oneBlock->ints[2] << "$ ||\n";
-            cout << "Name:\t\t" << oneBlock->strings[0] << "||\n";
-            cout << "BIRTHDATE:\t\t" << oneBlock->strings[1] << "||\n";
-            cout << "COMMENT:\t\t" << oneBlock->strings[2] << "||\n";
+            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "SUM of DEALS: " << "<" << std::setw(paddNext)<< oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "total erned money: " << "<" << std::setw(paddNext)<< oneBlock->ints[2] << "$>||\n";
+            cout << std::setw(padding) << "Name: " << "<" << std::setw(paddNext)<< oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "BIRTHDATE: " << "<" << std::setw(paddNext)<< oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[2] << ">||\n";
             break;
+
         case TABLE_SALES:
-            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
-            cout << "CAR ID:\t\t" << oneBlock->ints[1] << "||\n";
-            cout << "SALE DATE:\t\t" << oneBlock->strings[0] << "||\n";
-            cout << "COMMENT:\t\t" << oneBlock->strings[1] << "||\n";
+            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "CAR ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "SALE DATE: " << "<" << std::setw(paddNext)<< oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[1] << ">||\n";
             break;
+
         case TABLE_CLIENTS:
-            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
-            cout << "PHONE:\t\t" << oneBlock->ints[1] << "||\n";
-            cout << "STATUS:\t\t" << oneBlock->ints[2] << "||\n";
-            cout << "DISCOUNT %:\t\t" << oneBlock->ints[3] << "||\n";
-            cout << "Name:\t\t" << oneBlock->strings[0] << "||\n";
-            cout << "BIRTHDATE:\t\t" << oneBlock->strings[1] << "||\n";
-            cout << "PASSPORT DATA:\t\t" << oneBlock->strings[2] << "||\n";
-            cout << "COMMENT:\t\t" << oneBlock->strings[3] << "||\n";
+            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext) << oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "PHONE: " << "<" << std::setw(paddNext) << oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "STATUS: " << "<" << std::setw(paddNext) << oneBlock->ints[2] << ">||\n";
+            cout << std::setw(padding) << "DISCOUNT %: " << "<" << std::setw(paddNext) << oneBlock->ints[3] << ">||\n";
+            cout << std::setw(padding) << "Name: " << "<" << std::setw(paddNext) << oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "BIRTHDATE: " << "<" << std::setw(paddNext) << oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "PASSPORT DATA: " << "<" << std::setw(paddNext) << oneBlock->strings[2] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext) << oneBlock->strings[3] << ">||\n";
             break;
+
         default:
             cout << "error in BASE\n";
             break;
@@ -263,85 +285,105 @@ void Interface::_insert(short curr)
 {
     DEBUGER("select INSERT !!!!!!!!!!", "")
     struct rowData req;
+
     switch (curr)
     {
-    case 0: //model
-        req.tableID = TABLE_CARS;
-        req.ints.push_back(_getNumber("set id(int): "));
-        req.ints.push_back(_getNumber("set price(int): "));
-        req.strings.push_back(_getString("set model: "));
-        req.strings.push_back(_getString("set year: "));
-        req.strings.push_back(_getString("set color: "));
-        req.strings.push_back(_getString("set technician characteristics: "));
-        req.strings.push_back(_getString("set equipment: "));
-        req.strings.push_back(_getString("add your comment: "));
-        break;
-    case 1: //manager
-        req.tableID = TABLE_MANAGERS;
-        req.ints.push_back(_getNumber("set id(int): "));
-        req.ints.push_back(_getNumber("set sum of deals(int): "));
-        req.ints.push_back(_getNumber("set total erned money(int): "));
-        req.strings.push_back(_getString("set name of manager: "));
-        req.strings.push_back(_getString("set birthdate: "));
-        req.strings.push_back(_getString("add your comment: "));
-        break;
-    case 2: //deal
-        req.tableID = TABLE_SALES;
-        req.ints.push_back(_getNumber("set id(int): "));
-        req.ints.push_back(_getNumber("set scar id(int): "));
-        req.strings.push_back(_getString("set sold date: "));
-        req.strings.push_back(_getString("add your comment: "));
-        break;
-    case 3: //client
-        req.tableID = TABLE_CLIENTS;
-        req.ints.push_back(_getNumber("set id(int): "));
-        req.ints.push_back(_getNumber("set phone number(int) (like: 89349214543): "));
-        req.ints.push_back(_getNumber("set status of usual(int): "));
-        req.ints.push_back(_getNumber("set discount precentage(int): "));
-        req.strings.push_back(_getString("set name of buyer: "));
-        req.strings.push_back(_getString("set birthdate: "));
-        req.strings.push_back(_getString("set pasport data: "));
-        req.strings.push_back(_getString("add your comment: "));
-        break;
-    default:
-        cout << "! invalid argument !\n";
-        return;
+        case 0: //model
+            req.tableID = TABLE_CARS;
+            req.ints.push_back(_getNumber("set id(int): "));
+            req.ints.push_back(_getNumber("set price(int): "));
+            req.strings.push_back(_getString("set model: "));
+            req.strings.push_back(_getString("set year: "));
+            req.strings.push_back(_getString("set color: "));
+            req.strings.push_back(_getString("set technician characteristics: "));
+            req.strings.push_back(_getString("set equipment: "));
+            req.strings.push_back(_getString("add your comment: "));
+            break;
+
+        case 1: //manager
+            req.tableID = TABLE_MANAGERS;
+            req.ints.push_back(_getNumber("set id(int): "));
+            req.ints.push_back(_getNumber("set sum of deals(int): "));
+            req.ints.push_back(_getNumber("set total erned money(int): "));
+            req.strings.push_back(_getString("set name of manager: "));
+            req.strings.push_back(_getString("set birthdate: "));
+            req.strings.push_back(_getString("add your comment: "));
+            break;
+
+        case 2: //deal
+            req.tableID = TABLE_SALES;
+            req.ints.push_back(_getNumber("set id(int): "));
+            req.ints.push_back(_getNumber("set scar id(int): "));
+            req.strings.push_back(_getString("set sold date: "));
+            req.strings.push_back(_getString("add your comment: "));
+            break;
+
+        case 3: //client
+            req.tableID = TABLE_CLIENTS;
+            req.ints.push_back(_getNumber("set id(int): "));
+            req.ints.push_back(_getNumber("set phone number(int) (like: 89349214543): "));
+            req.ints.push_back(_getNumber("set status of usual(int): "));
+            req.ints.push_back(_getNumber("set discount precentage(int): "));
+            req.strings.push_back(_getString("set name of buyer: "));
+            req.strings.push_back(_getString("set birthdate: "));
+            req.strings.push_back(_getString("set pasport data: "));
+            req.strings.push_back(_getString("add your comment: "));
+            break;
+
+        default:
+            cout << "! invalid argument !\n";
+            return;
     }
+    
     db->REMOVE(req);
     db->ADD(req);
     ///////////////////////////////////////////////////////////////////
 }
+
 void Interface::_remove(short curr)
 {
     DEBUGER("select REMOVE !!!!!!!!!!", "")
+
     string fields[4];
     fields[TABLE_CARS] = "car model";
     fields[TABLE_MANAGERS] = "name of manager";
     fields[TABLE_SALES] = "input id of sale (integer): ";
     fields[TABLE_CLIENTS] = "name of client";
+
     rowData req;
+
     switch (curr)
     {
-    case 0: //model
+    //model
+    case 0: 
         req.tableID = TABLE_CARS;
         break;
-    case 1: //manager
+
+    //manager
+    case 1: 
         req.tableID = TABLE_MANAGERS;
         break;
-    case 2: //deal
+
+    //deal
+    case 2: 
         req.tableID = TABLE_SALES;
         break;
-    case 3: //client
+
+    //client
+    case 3: 
         req.tableID = TABLE_CLIENTS;
         break;
+
     default:
         cout << "! invalid argument !\n";
         return;
     }
+
     if (curr != 2)
     {
         if (std::cin.rdbuf()->in_avail() > 0)
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+
         cout << "input " << fields[req.tableID] << ": ";
         string str;
         cin >> str;
@@ -352,9 +394,10 @@ void Interface::_remove(short curr)
         int data = _getNumber(fields[req.tableID]);
         req.ints.push_back(data);
     }
-    bool result = db->REMOVE(req);
-    cout << "result: " << result << "\n";
+
+    cout << "result: " << db->REMOVE(req) << "\n";
 }
+
 void Interface::_help()
 {
     cout << "\n_____________help_________________\n";
@@ -378,17 +421,18 @@ void Interface::_help()
 bool Interface::_is_number(const std::string &s)
 {
     std::string::const_iterator it = s.begin();
+
     while (it != s.end() && std::isdigit(*it))
         ++it;
+
     try
     {
         bool flag = !s.empty() && it == s.end();
+
         if (flag)
             stoi(s);
         else
-        {
             cout << "\n<<!NOT INT NUMBER!>>\n\n";
-        }
 
         return flag;
     }
@@ -402,10 +446,12 @@ bool Interface::_is_number(const std::string &s)
 int Interface::_getNumber()
 {
     string data;
+
     do
     {
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
         cout << "input data for search (integer): ";
         cin >> data;
     } while (!_is_number(data));
@@ -416,24 +462,30 @@ int Interface::_getNumber()
 int Interface::_getNumber(string str)
 {
     string data;
+    
     do
     {
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
         cout << str;
         cin >> data;
     } while (!_is_number(data));
 
     return stoi(data);
 }
+
 string Interface::_getString(string str)
 {
     std::string data;
+    
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
     cout << str;
     DEBUGER("clean buffer ", std::numeric_limits<std::streamsize>::max())
     std::getline(std::cin, data);
     DEBUGER(data, "this is your data")
+    
     return data;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <iomanip>
 #include <vector>
 //#include <conio.h>
 #include "dbms.h"
@@ -24,8 +25,7 @@ private:
     void _help();
 
 public:
-    Interface(/* args */);
-    ~Interface();
+    Interface();
     struct BaseData getInitData();
     void setDb(DBMS *);
     void runDataBase();
