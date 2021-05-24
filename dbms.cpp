@@ -16,10 +16,10 @@ DBMS::DBMS(string dbFolder, bool isInit)
     // Readers opening
     dbPath = dbFolder;
 
-    treader[TABLE_CARS].open(dbFolder + TABLE_CARS_SPATH);
-    treader[TABLE_MANAGERS].open(dbFolder + TABLE_MANAGERS_SPATH);
-    treader[TABLE_SALES].open(dbFolder + TABLE_SALES_SPATH);
-    treader[TABLE_CLIENTS].open(dbFolder + TABLE_CLIENTS_SPATH);
+    treader[TABLE_CARS].open(dbFolder + TABLE_CARS_SPATH, ios::out);
+    treader[TABLE_MANAGERS].open(dbFolder + TABLE_MANAGERS_SPATH, ios::app);
+    treader[TABLE_SALES].open(dbFolder + TABLE_SALES_SPATH, ios::out);
+    treader[TABLE_CLIENTS].open(dbFolder + TABLE_CLIENTS_SPATH, ios::out);
 
     if (isInit)
         readDB();
@@ -28,6 +28,9 @@ DBMS::DBMS(string dbFolder, bool isInit)
 DBMS::~DBMS()
 {
     saveDB();
+    
+    for (int tid = 0; tid < NUM_OF_TABLES; tid++)
+        treader[tid].close();
 }
 
 void DBMS::readDB()
@@ -35,24 +38,29 @@ void DBMS::readDB()
     string str;
     rowData *currData;
 
-    for (int i = 0; i < NUM_OF_TABLES; i++)
-        tdata[i].clear();
+    for (int tid = 0; tid < NUM_OF_TABLES; tid++) {
+        tdata[tid].clear();
 
-    for (int tid = 0; tid < NUM_OF_TABLES; tid++)
-        while (!treader[tid].eof()) {
+        while (!(treader[tid].peek() == EOF)) {
             currData = new rowData();
             currData->tableID = tid;
 
-            for (int col = dbTableSize[tid] - 1; col >= 0; col++) {
-                if (!getline(treader[tid], str))
-                    continue;
+            for (int col = dbTableSize[tid] - 1; col >= 0; col--) {
+                getline(treader[tid], str);
 
-                if ((dbTableStruct[tid] >> col) & 0x01)
-                    currData->ints.push_back(stoi(str));
+                if ((dbTableStruct[tid] >> col) & 0x01) {
+                    if (str.empty())
+                        currData->ints.push_back(0);
+                    else
+                        currData->ints.push_back(stoi(str));
+                }
                 else
                     currData->strings.push_back(str);
             }
+
+            tdata[tid].push_back(currData);
         }
+    }
 }
 
 void DBMS::saveDB()
@@ -68,7 +76,12 @@ void DBMS::saveDB()
 
 void DBMS::ADD(rowData data)
 {
-    tdata[data.tableID].push_back(&data);
+    rowData *tmp = new rowData;
+    tmp->tableID = data.tableID;
+    tmp->ints = data.ints;
+    tmp->strings = data.strings;
+
+    tdata[data.tableID].push_back(tmp);
 }
 
 vector<rowData *> DBMS::GET(rowData toGet)
@@ -94,14 +107,15 @@ bool DBMS::REMOVE(rowData data)
 
     startSize = tdata[data.tableID].size();
 
-    if (data.tableID != TABLE_SALES)
+    if (data.tableID != TABLE_SALES) {
         for (int jnx = 0; jnx < tdata[data.tableID].size(); jnx++)
             if (tdata[data.tableID][jnx]->strings[0] == data.strings[0])
                 tdata[data.tableID].erase(tdata[data.tableID].begin() + jnx);
-            else
-                for (int jnx = 0; jnx < tdata[data.tableID].size(); jnx++)
-                    if (tdata[data.tableID][jnx]->ints[0] == data.ints[0])
-                        tdata[data.tableID].erase(tdata[data.tableID].begin() + jnx);
+    }
+    else
+        for (int jnx = 0; jnx < tdata[data.tableID].size(); jnx++)
+            if (tdata[data.tableID][jnx]->ints[0] == data.ints[0])
+                tdata[data.tableID].erase(tdata[data.tableID].begin() + jnx);
 
     return startSize == tdata[data.tableID].size();
 }
