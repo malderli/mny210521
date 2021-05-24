@@ -1,22 +1,30 @@
-#pragma once
 #include <iostream>
 #include <fstream>
 #include "constants.h"
 #include <string>
+#include <vector>
 
 using namespace std;
 
 class DBMS
 {
 private:
-    bool INITDB(string dbFolder);
+    // bool initDB(string dbFolder);
+    void readDB();
+    void saveDB();
 
-    fstream tables[4];
+    int dbTableStruct[NUM_OF_TABLES];
+    short dbTableSize[NUM_OF_TABLES];
+
+    fstream treader[NUM_OF_TABLES];
+    vector<rowData *> tdata[NUM_OF_TABLES];
 
 public:
-    DBMS(string dbFolder, bool isInit = true);
+    string dbPath;
 
-    rowData GET(rowData data);
-    bool ADD(rowData data);
+    DBMS(string dbFolder, bool isInit);
+
+    vector<rowData *> GET(rowData toGet);
+    void ADD(rowData data);
     bool REMOVE(rowData data);
 };
