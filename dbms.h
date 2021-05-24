@@ -18,7 +18,7 @@ private:
     short dbTableSize[NUM_OF_TABLES];
 
     fstream treader[NUM_OF_TABLES];
-    vector<rowData *> tdata[NUM_OF_TABLES];
+    vector<rowData*> tdata[NUM_OF_TABLES];
 
 public:
     string dbPath;
