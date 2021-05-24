@@ -18,5 +18,6 @@ int main()
     DBMS db(initDb.path, initDb.isInit);
     interface.setDb(&db);
     interface.runDataBase();
+    db.~DBMS();
     return 0;
 }
