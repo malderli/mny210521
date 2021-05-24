@@ -1,6 +1,6 @@
 #include "interface.h"
-#define DEBUGER(str, data) cout << str << "|" << data;
-
+//#define DEBUGER(str, data) cout << "\n<<" << str << "|" << data << ">>\n";
+#define DEBUGER(str, data)
 Interface::Interface(/* args */)
 {
     db = nullptr;
@@ -12,14 +12,18 @@ Interface::~Interface()
 
 struct BaseData Interface::getInitData()
 {
+    if (std::cin.rdbuf()->in_avail() > 0)
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     cout << "Hello, let's start\nDo you already have data base(y/N): ";
     char baseExist = std::cin.get();
     DEBUGER("test", baseExist)
-    cout << '\n';
+    //cout << '\n';
 
     struct BaseData outData;
     outData.isInit = ((baseExist == 'Y') || (baseExist == 'y')) ? true : false;
     DEBUGER("is init: ", outData.isInit)
+    if (std::cin.rdbuf()->in_avail() > 0)
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     cout << "Type data base directory: ";
     cin >> outData.path;
     return outData;
@@ -41,33 +45,35 @@ void Interface::runDataBase()
     short cmdCertain = 0;
     do
     {
-        cout << "Input comand (or type '?'): ";
-        cin >> comand;
         if (flagMenu)
         {
+            if (std::cin.rdbuf()->in_avail() > 0)
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "First menu\n - 1 Select\n - 2 Insert/Update\n - 3 Delete\nInput comand (or type '?'): ";
+            cin >> comand;
             switch (comand)
             {
             case '1':
                 flagMenu = false;
-                cout << "\n 1 comand: SELECT\n";
+                cout << "\n<1 comand: SELECT chosen>\n";
                 cmdType = 0;
                 break;
             case '2':
                 flagMenu = false;
-                cout << "\n 2 comand: INSERT or UPDATE\n";
+                cout << "\n<2 comand: INSERT or UPDATE chosen>\n";
                 cmdType = 1;
                 break;
             case '3':
                 flagMenu = false;
-                cout << "\n 3 comand: DELETE\n";
+                cout << "\n<3 comand: DELETE chosen>\n";
                 cmdType = 2;
                 break;
             case '?':
-                cout << "\n ? comand: help\n"; ////////////////////////////////////////////////////
+                cout << "\n<? comand: HELP chosen>\n"; ////////////////////////////////////////////////////
                 _help();
                 break;
             case 'e':
-                cout << "exit comand\n";
+                cout << "\n<exit comand>\n";
                 break;
             case 's':
                 cout << "you are already in default menu\n";
@@ -79,29 +85,35 @@ void Interface::runDataBase()
         }
         else
         {
+            if (std::cin.rdbuf()->in_avail() > 0)
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Second menu\nFirst choise: " << cmdType + 1
+                 << " <" << cmdTypes[cmdType] << '>'
+                 << "\n - 1 Model\n - 2 Manager\n - 3 Deal\n - 3 Client\nInput comand (or type '?'): ";
+            cin >> comand;
             switch (comand)
             {
             case '1':
                 flagMenu = true;
-                cout << "\n 1 comand: " << cmdTypes[cmdType] << " MODEL\n";
+                cout << "\n<1 comand: " << cmdTypes[cmdType] << " MODEL chosen>\n";
                 cmdCertain = 0;
                 flagReset = true;
                 break;
             case '2':
                 flagMenu = true;
-                cout << "\n 2 comand: " << cmdTypes[cmdType] << " MANAGER\n";
+                cout << "\n<2 comand: " << cmdTypes[cmdType] << " MANAGER chosen>\n";
                 cmdCertain = 1;
                 flagReset = true;
                 break;
             case '3':
                 flagMenu = true;
-                cout << "\n 3 comand: " << cmdTypes[cmdType] << " DEAL\n";
+                cout << "\n<3 comand: " << cmdTypes[cmdType] << " DEAL chosen>\n";
                 cmdCertain = 2;
                 flagReset = true;
                 break;
             case '4':
                 flagMenu = true;
-                cout << "\n 3 comand: " << cmdTypes[cmdType] << " CLIENT\n";
+                cout << "\n<3 comand: " << cmdTypes[cmdType] << " CLIENT chosen>\n";
                 cmdCertain = 3;
                 flagReset = true;
                 break;
@@ -111,10 +123,10 @@ void Interface::runDataBase()
                 flagReset = false;
                 break;
             case 'e':
-                cout << "exit comand\n";
+                cout << "\n<exit comand>\n";
                 break;
             case '?':
-                cout << "\n ? comand: help\n"; ////////////////////////////////////////////////////
+                cout << "\n<? comand: HELP chosen>\n"; ////////////////////////////////////////////////////
                 _help();
                 break;
             default:
@@ -143,9 +155,11 @@ void Interface::runDataBase()
         }
         if (comand == 'e')
         {
+            if (std::cin.rdbuf()->in_avail() > 0)
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             cout << "Are you shure? type 'n' if you want to stay in or any other key: ";
             cin >> comand;
-            comand = comand == 'n' ? 'n' : 'e';
+            comand = ((comand == 'n') || (comand == 'N')) ? 'n' : 'e';
         }
 
     } while (comand != 'e');
@@ -153,9 +167,14 @@ void Interface::runDataBase()
 
 void Interface::_select(short curr)
 {
+    string fields[4];
+    fields[TABLE_CARS] = "car model";
+    fields[TABLE_MANAGERS] = "name of manager";
+    fields[TABLE_SALES] = "input id of sale (integer): ";
+    fields[TABLE_CLIENTS] = "name of client";
     struct rowData req;
 
-    cout << "select COMAND !!!!!!!!!!";
+    DEBUGER("SELECT COMAND in func", "")
     switch (curr)
     {
     case 0: //model
@@ -171,27 +190,32 @@ void Interface::_select(short curr)
         req.tableID = TABLE_CLIENTS;
         break;
     default:
-        cout << "! invalid argument !\n";
+        cout << "<! invalid argument !>\n";
         return;
     }
     if (curr != 2)
     {
-        cout << "input data for search: ";
+        if (std::cin.rdbuf()->in_avail() > 0)
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "input " << fields[req.tableID] << ": ";
         string str;
         cin >> str;
         req.strings.push_back(str);
     }
     else
     {
-        int data = _getNumber();
+        int data = _getNumber(fields[req.tableID]);
         req.ints.push_back(data);
     }
 
     vector<rowData *> result = db->GET(req);
-
+    if (result.size() == 0)
+    {
+        cout << "\nNo such data in base\n";
+    }
     for (rowData *oneBlock : result)
     {
-        cout << "_________block data__________\n";
+        cout << "_________block data__________\n\n";
         switch (oneBlock->tableID)
         {
         case TABLE_CARS:
@@ -237,10 +261,8 @@ void Interface::_select(short curr)
 }
 void Interface::_insert(short curr)
 {
-    cout << "select INSERT !!!!!!!!!!";
+    DEBUGER("select INSERT !!!!!!!!!!", "")
     struct rowData req;
-
-    cout << "select COMAND !!!!!!!!!!";
     switch (curr)
     {
     case 0: //model
@@ -272,7 +294,6 @@ void Interface::_insert(short curr)
         break;
     case 3: //client
         req.tableID = TABLE_CLIENTS;
-        req.tableID = TABLE_MANAGERS;
         req.ints.push_back(_getNumber("set id(int): "));
         req.ints.push_back(_getNumber("set phone number(int) (like: 89349214543): "));
         req.ints.push_back(_getNumber("set status of usual(int): "));
@@ -292,10 +313,13 @@ void Interface::_insert(short curr)
 }
 void Interface::_remove(short curr)
 {
-    cout << "select REMOVE !!!!!!!!!!";
+    DEBUGER("select REMOVE !!!!!!!!!!", "")
+    string fields[4];
+    fields[TABLE_CARS] = "car model";
+    fields[TABLE_MANAGERS] = "name of manager";
+    fields[TABLE_SALES] = "input id of sale (integer): ";
+    fields[TABLE_CLIENTS] = "name of client";
     rowData req;
-
-    cout << "select COMAND !!!!!!!!!!";
     switch (curr)
     {
     case 0: //model
@@ -316,14 +340,16 @@ void Interface::_remove(short curr)
     }
     if (curr != 2)
     {
-        cout << "input data for detect remove (name/model of car): ";
+        if (std::cin.rdbuf()->in_avail() > 0)
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "input " << fields[req.tableID] << ": ";
         string str;
         cin >> str;
         req.strings.push_back(str);
     }
     else
     {
-        int data = _getNumber("input id of deal (integer): ");
+        int data = _getNumber(fields[req.tableID]);
         req.ints.push_back(data);
     }
     bool result = db->REMOVE(req);
@@ -331,7 +357,7 @@ void Interface::_remove(short curr)
 }
 void Interface::_help()
 {
-    cout << "_____________help_________________\n";
+    cout << "\n_____________help_________________\n";
     cout << "2 sections of menu:\n";
     cout << "First section:\n";
     cout << "comand '1' - SELECT\n";
@@ -339,14 +365,14 @@ void Interface::_help()
     cout << "comand '3' - DELETE\n-----------------------------\n";
     cout << "Second section:\n";
     cout << "comand '1' - CAR\n";
-    cout << "comand '1' - MANAGER\n";
-    cout << "comand '1' - SALES\n";
-    cout << "comand '1' - CLIENTS\n";
+    cout << "comand '2' - MANAGER\n";
+    cout << "comand '3' - SALES\n";
+    cout << "comand '4' - CLIENTS\n";
     cout << "-----------------------------------\n";
     cout << "Common logic: first of all choice type of \ncomand (1 select, 2 insert/update, 3 delete)";
     cout << "after that, choice \ntable (1 cars, 2 managers, 3 sales, 4 clients)\n\n";
     cout << "to exit type 'e', to go to start menu type 's', and '?' for watch this text\n";
-    cout << "___________________________________\n";
+    cout << "___________________________________\n\n";
 }
 
 bool Interface::_is_number(const std::string &s)
@@ -354,7 +380,23 @@ bool Interface::_is_number(const std::string &s)
     std::string::const_iterator it = s.begin();
     while (it != s.end() && std::isdigit(*it))
         ++it;
-    return !s.empty() && it == s.end();
+    try
+    {
+        bool flag = !s.empty() && it == s.end();
+        if (flag)
+            stoi(s);
+        else
+        {
+            cout << "\n<<!NOT INT NUMBER!>>\n\n";
+        }
+
+        return flag;
+    }
+    catch (...)
+    {
+        cout << "to much... need smaler number\n";
+        return false;
+    }
 }
 
 int Interface::_getNumber()
@@ -362,6 +404,8 @@ int Interface::_getNumber()
     string data;
     do
     {
+        if (std::cin.rdbuf()->in_avail() > 0)
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         cout << "input data for search (integer): ";
         cin >> data;
     } while (!_is_number(data));
@@ -374,6 +418,8 @@ int Interface::_getNumber(string str)
     string data;
     do
     {
+        if (std::cin.rdbuf()->in_avail() > 0)
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         cout << str;
         cin >> data;
     } while (!_is_number(data));
@@ -382,8 +428,12 @@ int Interface::_getNumber(string str)
 }
 string Interface::_getString(string str)
 {
-    string data;
+    std::string data;
+    if (std::cin.rdbuf()->in_avail() > 0)
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     cout << str;
-    cin >> data;
+    DEBUGER("clean buffer ", std::numeric_limits<std::streamsize>::max())
+    std::getline(std::cin, data);
+    DEBUGER(data, "this is your data")
     return data;
 }
