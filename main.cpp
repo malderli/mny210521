@@ -18,15 +18,17 @@ void DBMS_test(DBMS *db)
     tdata.ints.push_back(4);
     tdata.ints.push_back(1000020);
 
-    tdata.strings.push_back("ta");
-    tdata.strings.push_back("10.03.2000");
-    tdata.strings.push_back("nice guy");
+    tdata.strings.push_back("va");
+    tdata.strings.push_back("10.03.1998");
+    tdata.strings.push_back("good guy");
 
     toget.tableID = 1;
-    toget.strings.push_back("vasya");
+    toget.strings.push_back("va");
 
-    db->ADD(tdata);
-    res = db->GET(toget);
+    //db->ADD(tdata);
+    //res = db->GET(toget);
+    
+    db->REMOVE(toget);
 
     cout << res.size() << "\n";
 }
