@@ -10,7 +10,7 @@ Interface::~Interface()
 {
 }
 
-struct BaseData Interface::init()
+struct BaseData Interface::getInitData()
 {
     cout << "Hello, let's start\nDo you already have data base(y/N): ";
     char baseExist = std::cin.get();
@@ -44,7 +44,7 @@ void Interface::runDataBase()
 
 
     */
-    char *cmdTypes[3] = {"SELECT", "INSERT or UPDATE", "DELETE"};
+    string cmdTypes[3] = {"SELECT", "INSERT or UPDATE", "DELETE"};
     char comand; // = "end";
     bool flagMenu = true;
     bool flagReset = false;
@@ -75,7 +75,7 @@ void Interface::runDataBase()
                 break;
             case '?':
                 cout << "\n ? comand: help\n"; ////////////////////////////////////////////////////
-                help();
+                _help();
                 break;
             case 'e':
                 cout << "exit comand\n";
@@ -123,7 +123,7 @@ void Interface::runDataBase()
                 break;
             case '?':
                 cout << "\n ? comand: help\n"; ////////////////////////////////////////////////////
-                help();
+                _help();
                 break;
             default:
                 cout << "\nNOT a comand. Type '?' or any other comand\n";
@@ -137,13 +137,13 @@ void Interface::runDataBase()
             switch (cmdType)
             {
             case 0:
-                select(cmdCertain);
+                _select(cmdCertain);
                 break;
             case 1:
-                insert(cmdCertain);
+                _insert(cmdCertain);
                 break;
             case 2:
-                remove(cmdCertain);
+                _remove(cmdCertain);
                 break;
             default:
                 break;
@@ -159,7 +159,7 @@ void Interface::runDataBase()
     } while (comand != 'e');
 }
 
-void Interface::select(short curr)
+void Interface::_select(short curr)
 {
     struct rowData req;
 
@@ -191,34 +191,180 @@ void Interface::select(short curr)
     }
     else
     {
-        string data;
-        do
-        {
-            cout << "input data for search (integer): ";
-            cin >> data;
-        } while (!is_number(data));
-        int intDat = stoi(data);
-        req.ints.push_back(intDat);
+        int data = _getNumber();
+        req.ints.push_back(data);
     }
-    //db->GET(req);
+
+    vector<rowData *> result = db->GET(req);
+
+    for (rowData *oneBlock : result)
+    {
+        cout << "_________block data__________\n";
+        switch (oneBlock->tableID)
+        {
+        case TABLE_CARS:
+            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
+            cout << "PRICE:\t\t" << oneBlock->ints[1] << "||\n";
+            cout << "MODEL:\t\t" << oneBlock->strings[0] << "||\n";
+            cout << "YEAR:\t\t" << oneBlock->strings[1] << "||\n";
+            cout << "COLOR:\t\t" << oneBlock->strings[2] << "||\n";
+            cout << "TECH CHAR:\t\t" << oneBlock->strings[3] << "||\n";
+            cout << "EQUIPMENT:\t\t" << oneBlock->strings[4] << "||\n";
+            cout << "COMMENT:\t\t" << oneBlock->strings[5] << "||\n";
+            break;
+        case TABLE_MANAGERS:
+            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
+            cout << "SUM of DEALS:\t\t" << oneBlock->ints[1] << "||\n";
+            cout << "total erned money:\t\t" << oneBlock->ints[2] << "$ ||\n";
+            cout << "Name:\t\t" << oneBlock->strings[0] << "||\n";
+            cout << "BIRTHDATE:\t\t" << oneBlock->strings[1] << "||\n";
+            cout << "COMMENT:\t\t" << oneBlock->strings[2] << "||\n";
+            break;
+        case TABLE_SALES:
+            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
+            cout << "CAR ID:\t\t" << oneBlock->ints[1] << "||\n";
+            cout << "SALE DATE:\t\t" << oneBlock->strings[0] << "||\n";
+            cout << "COMMENT:\t\t" << oneBlock->strings[1] << "||\n";
+            break;
+        case TABLE_CLIENTS:
+            cout << "ID:\t\t" << oneBlock->ints[0] << "||\n";
+            cout << "PHONE:\t\t" << oneBlock->ints[1] << "||\n";
+            cout << "STATUS:\t\t" << oneBlock->ints[2] << "||\n";
+            cout << "DISCOUNT %:\t\t" << oneBlock->ints[3] << "||\n";
+            cout << "Name:\t\t" << oneBlock->strings[0] << "||\n";
+            cout << "BIRTHDATE:\t\t" << oneBlock->strings[1] << "||\n";
+            cout << "PASSPORT DATA:\t\t" << oneBlock->strings[2] << "||\n";
+            cout << "COMMENT:\t\t" << oneBlock->strings[3] << "||\n";
+            break;
+        default:
+            cout << "error in BASE\n";
+            break;
+        }
+    }
+    cout << "_______________________\n";
 }
-void Interface::insert(short curr)
+void Interface::_insert(short curr)
 {
     cout << "select INSERT !!!!!!!!!!";
+    struct rowData req;
+
+    cout << "select COMAND !!!!!!!!!!";
+    switch (curr)
+    {
+    case 0: //model
+        req.tableID = TABLE_CARS;
+        req.ints.push_back(_getNumber("set id(int): "));
+        req.ints.push_back(_getNumber("set price(int): "));
+        req.strings.push_back(_getString("set model: "));
+        req.strings.push_back(_getString("set year: "));
+        req.strings.push_back(_getString("set color: "));
+        req.strings.push_back(_getString("set technician characteristics: "));
+        req.strings.push_back(_getString("set equipment: "));
+        req.strings.push_back(_getString("add your comment: "));
+        break;
+    case 1: //manager
+        req.tableID = TABLE_MANAGERS;
+        req.ints.push_back(_getNumber("set id(int): "));
+        req.ints.push_back(_getNumber("set sum of deals(int): "));
+        req.ints.push_back(_getNumber("set total erned money(int): "));
+        req.strings.push_back(_getString("set name of manager: "));
+        req.strings.push_back(_getString("set birthdate: "));
+        req.strings.push_back(_getString("add your comment: "));
+        break;
+    case 2: //deal
+        req.tableID = TABLE_SALES;
+        req.ints.push_back(_getNumber("set id(int): "));
+        req.ints.push_back(_getNumber("set scar id(int): "));
+        req.strings.push_back(_getString("set sold date: "));
+        req.strings.push_back(_getString("add your comment: "));
+        break;
+    case 3: //client
+        req.tableID = TABLE_CLIENTS;
+        req.tableID = TABLE_MANAGERS;
+        req.ints.push_back(_getNumber("set id(int): "));
+        req.ints.push_back(_getNumber("set phone number(int) (like: 89349214543): "));
+        req.ints.push_back(_getNumber("set status of usual(int): "));
+        req.ints.push_back(_getNumber("set discount precentage(int): "));
+        req.strings.push_back(_getString("set name of buyer: "));
+        req.strings.push_back(_getString("set birthdate: "));
+        req.strings.push_back(_getString("set pasport data: "));
+        req.strings.push_back(_getString("add your comment: "));
+        break;
+    default:
+        cout << "! invalid argument !\n";
+        return;
+    }
+    db->REMOVE(req);
+    db->ADD(req);
+    ///////////////////////////////////////////////////////////////////
 }
-void Interface::remove(short curr)
+void Interface::_remove(short curr)
 {
     cout << "select REMOVE !!!!!!!!!!";
+    rowData req;
+
+    cout << "select COMAND !!!!!!!!!!";
+    switch (curr)
+    {
+    case 0: //model
+        req.tableID = TABLE_CARS;
+        break;
+    case 1: //manager
+        req.tableID = TABLE_MANAGERS;
+        break;
+    case 2: //deal
+        req.tableID = TABLE_SALES;
+        break;
+    case 3: //client
+        req.tableID = TABLE_CLIENTS;
+        break;
+    default:
+        cout << "! invalid argument !\n";
+        return;
+    }
+    bool result = db->REMOVE(req);
+    cout << "result: " << result << "\n";
 }
-void Interface::help()
+void Interface::_help()
 {
     cout << "HELP HELP HELP";
 }
 
-bool Interface::is_number(const std::string &s)
+bool Interface::_is_number(const std::string &s)
 {
     std::string::const_iterator it = s.begin();
     while (it != s.end() && std::isdigit(*it))
         ++it;
     return !s.empty() && it == s.end();
+}
+
+int Interface::_getNumber()
+{
+    string data;
+    do
+    {
+        cout << "input data for search (integer): ";
+        cin >> data;
+    } while (!_is_number(data));
+
+    return stoi(data);
+}
+
+int Interface::_getNumber(string str)
+{
+    string data;
+    do
+    {
+        cout << str;
+        cin >> data;
+    } while (!_is_number(data));
+
+    return stoi(data);
+}
+string Interface::_getString(string str)
+{
+    string data;
+    cout << str;
+    cin >> data;
+    return data;
 }

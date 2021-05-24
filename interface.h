@@ -13,17 +13,19 @@ class Interface
 {
 private:
     DBMS *db;
-    void select(short curr);
-    void insert(short curr);
-    void remove(short curr);
-    bool is_number(const std::string &s);
-
-    void help();
+    void _select(short curr);
+    void _insert(short curr);
+    void _remove(short curr);
+    bool _is_number(const std::string &s);
+    int _getNumber();
+    int _getNumber(string str);
+    string _getString(string str);
+    void _help();
 
 public:
     Interface(/* args */);
     ~Interface();
-    struct BaseData init();
+    struct BaseData getInitData();
     void setDb(DBMS *);
     void runDataBase();
 };
