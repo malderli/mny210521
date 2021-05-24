@@ -17,15 +17,14 @@ private:
     short dbTableSize[NUM_OF_TABLES];
 
     fstream treader[NUM_OF_TABLES];
-    vector<rowData*> tdata[NUM_OF_TABLES];
+    vector<rowData *> tdata[NUM_OF_TABLES];
 
 public:
     string dbPath;
 
     DBMS(string dbFolder, bool isInit);
 
-    vector<rowData*> GET(rowData toGet);
+    vector<rowData *> GET(rowData toGet);
     void ADD(rowData data);
     bool REMOVE(rowData data);
 };
-

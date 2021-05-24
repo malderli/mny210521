@@ -1,4 +1,3 @@
-
 TABLE_CARS
     ID: 0
     FIELDS:
@@ -40,6 +39,3 @@ TABLE_CLIENTS
         BRITHDATE   string
         PASSDATA    string
         COMMENT     string
-
-
-

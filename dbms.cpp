@@ -33,11 +33,13 @@ void DBMS::readDB()
         tdata[i].clear();
 
     for (int tid = 0; tid < NUM_OF_TABLES; tid++)
-        while (!treader[tid].eof()) {
+        while (!treader[tid].eof())
+        {
             currData = new rowData();
             currData->tableID = tid;
 
-            for (int col = 0; col < dbTableSize[tid]; col++) {
+            for (int col = 0; col < dbTableSize[tid]; col++)
+            {
                 getline(treader[tid], str);
 
                 if ((dbTableStruct[tid] >> col) & 0x01)
@@ -51,7 +53,8 @@ void DBMS::readDB()
 void DBMS::saveDB()
 {
     for (int tid = 0; tid < NUM_OF_TABLES; tid++)
-        for (rowData *currData : tdata[tid]) {
+        for (rowData *currData : tdata[tid])
+        {
             for (int i : currData->ints)
                 treader[tid] << i << '\n';
             for (string s : currData->strings)
@@ -64,9 +67,9 @@ void DBMS::ADD(rowData data)
     tdata[data.tableID].push_back(&data);
 }
 
-vector<rowData*> DBMS::GET(rowData toGet)
+vector<rowData *> DBMS::GET(rowData toGet)
 {
-    vector<rowData*> res;
+    vector<rowData *> res;
 
     if (toGet.tableID != TABLE_SALES)
         for (rowData *currData : tdata[toGet.tableID])
