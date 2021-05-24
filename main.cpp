@@ -40,7 +40,7 @@ int main()
     DBMS db(initDb.path, initDb.isInit);
          */
 
-    DBMS db("/media/malderli/Projects/Money/testfolder", 1);
+    DBMS db("/media/user/DATA/projects/mny210521/bb", 1);
 
     /*
     interface.setDb(&db);
