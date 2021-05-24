@@ -69,6 +69,9 @@ void Interface::runDataBase()
             case 'e':
                 cout << "exit comand\n";
                 break;
+            case 's':
+                cout << "you are already in default menu\n";
+                break;
             default:
                 cout << "\nNOT a comand. Type '?' or any other comand\n";
                 break;
@@ -340,8 +343,9 @@ void Interface::_help()
     cout << "comand '1' - SALES\n";
     cout << "comand '1' - CLIENTS\n";
     cout << "-----------------------------------\n";
-    cout << "Common logic: first of all choice type of comand (1 select, 2 insert/update, 3 delete)";
-    cout << "after that, choice table (1 cars, 2 managers, 3 sales, 4 clients)\n";
+    cout << "Common logic: first of all choice type of \ncomand (1 select, 2 insert/update, 3 delete)";
+    cout << "after that, choice \ntable (1 cars, 2 managers, 3 sales, 4 clients)\n\n";
+    cout << "to exit type 'e', to go to start menu type 's', and '?' for watch this text\n";
     cout << "___________________________________\n";
 }
 
