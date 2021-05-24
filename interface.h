@@ -3,6 +3,7 @@
 #include <vector>
 //#include <conio.h>
 #include "dbms.h"
+#include <limits>
 struct BaseData
 {
     std::string path;

@@ -11,7 +11,7 @@ void DBMS_test(DBMS *db)
 {
     rowData tdata;
     rowData toget;
-    vector<rowData*> res;
+    vector<rowData *> res;
 
     tdata.tableID = 1;
     tdata.ints.push_back(0);
@@ -35,15 +35,10 @@ void DBMS_test(DBMS *db)
 
 int main()
 {
+    cin.sync_with_stdio(false);
     /*
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     Interface interface;
     struct BaseData initDb = interface.getInitData();
-    cout << "in Main\n"
-         << initDb.path << "\n"
-         << initDb.isInit;
-
     DBMS db(initDb.path, initDb.isInit);
          */
 
