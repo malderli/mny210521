@@ -21,7 +21,8 @@ DBMS::DBMS(string dbFolder, bool isInit)
     treader[TABLE_SALES].open(dbFolder + TABLE_SALES_SPATH);
     treader[TABLE_CLIENTS].open(dbFolder + TABLE_CLIENTS_SPATH);
 
-    readDB();
+    if (isInit)
+        readDB();
 }
 
 void DBMS::readDB()
@@ -38,7 +39,7 @@ void DBMS::readDB()
             currData = new rowData();
             currData->tableID = tid;
 
-            for (int col = 0; col < dbTableSize[tid]; col++)
+            for (int col = dbTableSize[tid] - 1; col >= 0; col++)
             {
                 getline(treader[tid], str);
 
