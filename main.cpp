@@ -35,6 +35,9 @@ void DBMS_test(DBMS *db)
 
 int main()
 {
+    setlocale(LC_ALL, "Russian");
+    //SetConsoleCP(1251);
+    //SetConsoleOutputCP(1251);
     cin.sync_with_stdio(false);
 
     Interface interface;
