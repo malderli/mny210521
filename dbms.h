@@ -10,7 +10,6 @@ using namespace std;
 class DBMS
 {
 private:
-    // bool initDB(string dbFolder);
     void readDB();
     void saveDB();
 
@@ -27,6 +26,8 @@ public:
     ~DBMS();
 
     vector<rowData *> GET(rowData toGet);
+    vector<rowData *> GET(rowData toGet, short mask);
+
     void ADD(rowData data);
     bool REMOVE(rowData data);
 };
