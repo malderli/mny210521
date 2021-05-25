@@ -22,10 +22,11 @@ void DBMS_test(DBMS *db)
     tdata.strings.push_back("good guy");
 
     toget.tableID = 1;
+    toget.ints.push_back(0);
     toget.strings.push_back("va");
 
-    //db->ADD(tdata);
-    //res = db->GET(toget);
+    db->ADD(tdata);
+    res = db->GET(toget, 0x24);
 
     db->REMOVE(toget);
 
@@ -35,7 +36,9 @@ void DBMS_test(DBMS *db)
 int main()
 {
     cin.sync_with_stdio(false);
-    DBMS db("/media/user/DATA/projects/mny210521/bb", 1);
+    DBMS db("/media/malderli/Projects/Money/testfolder", 1);
+
+    DBMS_test(&db);
 
     return 0;
 }

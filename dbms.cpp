@@ -120,7 +120,6 @@ vector<rowData *> DBMS::GET(rowData toGet, short mask)
     short intsOffset;
     short stringsOffset;
 
-    // Check empty
     if (!tdata[toGet.tableID].size())
         return res;
 
@@ -137,20 +136,20 @@ vector<rowData *> DBMS::GET(rowData toGet, short mask)
                 continue;
 
             if ((dbTableStruct[toGet.tableID] >> col) & 0x01) {
-                vPosInt++;
-
                 if (currData->ints[intsOffset - col] != toGet.ints[vPosInt]) {
                     fits = false;
                     break;
                 }
+
+                vPosInt++;
             }
             else {
-                vPosString++;
-
                 if (currData->strings[stringsOffset - col] != toGet.strings[vPosString]) {
                     fits = false;
                     break;
                 }
+
+                vPosString++;
             }
         }
 
