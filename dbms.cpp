@@ -6,7 +6,7 @@ DBMS::DBMS(string dbFolder, bool isInit)
     dbTableStruct[TABLE_CARS] = 0x80;
     dbTableStruct[TABLE_MANAGERS] = 0x38;
     dbTableStruct[TABLE_SALES] = 0x0C;
-    dbTableStruct[TABLE_CLIENTS] = 0xF0;
+    dbTableStruct[TABLE_CLIENTS] = 0xE0;
 
     dbTableSize[TABLE_CARS] = 8;
     dbTableSize[TABLE_MANAGERS] = 6;

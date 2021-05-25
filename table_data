@@ -32,10 +32,10 @@ TABLE_CLIENTS
     ID: 3
     FIELDS
         ID          int
-        PHONE       int
         STAT        int
         DISCOUNT    int
         NAME        string
+        PHONE       string
         BRITHDATE   string
         PASSDATA    string
         COMMENT     string
