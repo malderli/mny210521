@@ -5,6 +5,9 @@
 //#include <conio.h>
 #include "dbms.h"
 #include <limits>
+#include <algorithm>
+#include <string>
+
 struct BaseData
 {
     std::string path;
@@ -21,8 +24,9 @@ private:
     bool _is_number(const std::string &s);
     int _getNumber();
     int _getNumber(string str);
+    int _menu(string, vector<char>);
     string _getString(string str);
-    void _help();
+    void _help(vector<char>);
 
 public:
     Interface();

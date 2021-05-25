@@ -36,150 +36,112 @@ void Interface::setDb(DBMS *base)
 
 void Interface::runDataBase()
 {
-    string cmdTypes[3] = { "SELECT", "INSERT or UPDATE", "DELETE" };
+    std::string cmdTypes[3] = { "SELECT", "INSERT or UPDAT", "DELETE" };
+
     char comand;
-    bool flagMenu = true;
-    bool flagReset = false;
     short cmdType = 0;
     short cmdCertain = 0;
+
+    vector<char> cmds = { CMD_EXIT, CMD_HELP, CMD_BREAK, CMD_MENU_ITEM_1, CMD_MENU_ITEM_2, CMD_MENU_ITEM_3, CMD_MENU_ITEM_4 };
     
+    string menuComand = "\nCHOOSE COMAND\n - " + std::string(1, cmds[3]) + 
+                                        " Select\n - " + cmds[4] + 
+                                        " Insert/Update\n - " + cmds[5] + 
+                                        " Delete\n - " + cmds[0] + " Save & Exit\n - " + 
+                                        cmds[1] + " Help\nInput comand: ";
+
     do
     {
-        if (flagMenu)
+        cmdType = _menu(menuComand, cmds);
+
+        if (cmdType == 2)
+        {
+                cout << "Уже в главном меню\n";
+                continue;
+        }
+
+        
+
+        if (cmdType != 0)
+        {
+            //cmdTypes[cmdType] +
+            std::string menuTable = "\n<";
+            if ( !((cmdType > 2) && ( cmdType < 6)) )
+                {
+                    continue;
+                }
+            
+            menuTable += cmdTypes[cmdType - 3];
+            menuTable += "> CHOOSE TABLE\n - " + std::string(1, cmds[3]) +
+                                        " Car\n - " + cmds[4] + " Manager\n - " + cmds[5] + 
+                                        " Deal\n - " + cmds[6] + " Client\n - " + cmds[2] +
+                                        " Break to First menu\n - " + cmds[0] + " Save & Exit\n - " + cmds[1] +
+                                        " Help\nInput comand: ";
+            cmdCertain = _menu(menuTable, cmds);
+            if (cmdCertain == 2)
+                continue;
+        }
+        
+        switch (cmdType)
+        {
+        case 3:
+            _select(cmdCertain);
+            break;
+        case 4:
+            _insert(cmdCertain);
+            break;
+        case 5:
+            _remove(cmdCertain);
+            break;
+        default:
+            break;
+        }
+        
+        if ((cmdType == 0) || (cmdCertain == 0))
         {
             if (std::cin.rdbuf()->in_avail() > 0)
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            cout << "\nCHOOSE COMAND\n - 1 Select\n - 2 Insert/Update\n - 3 Delete\n - b Break to First menu\n - e Save & Exit\n - ? Help\nInput comand: ";
-            cin >> comand;
-            switch (comand)
-            {
-            case '1':
-                flagMenu = false;
-                //cout << "\n<1 comand: SELECT chosen>\n";
-                
-                cmdType = 0;
-                break;
 
-            case '2':
-                flagMenu = false;
-                //cout << "\n<2 comand: INSERT or UPDATE chosen>\n";
-                
-                cmdType = 1;
-                break;
+            cout << "Вы уверены, что хотите выйти?\nВедите 'н' для отмены или любую другую клавишу для подтверждения: ";
+            comand = std::cin.get();
+            cmdType = ((comand == 'н') || (comand == 'Н') || (comand == '\320')) ? -1 : 0;
+        }
 
-            case '3':
-                flagMenu = false;
-                //cout << "\n<3 comand: DELETE chosen>\n";
-                
-                cmdType = 2;
-                break;
+    } while (cmdType != 0);
+}
+int Interface::_menu(string text, vector<char> cmds)
+{
+    char input = '\0';
+    do
+    {
+        cout << text;
+        if (std::cin.rdbuf()->in_avail() > 0)
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        
+        input = std::cin.get();
+        
+        auto it = std::find(cmds.begin(), cmds.end(), input);
+        int index;
 
-            case '?':
-                cout << "\n<? comand: HELP chosen>\n\n"; ////////////////////////////////////////////////////
-                _help();
-                break;
-
-            case 'e':
-                cout << "\n<Save & Exit comand>\n";
-                
-                break;
-
-            case 'b':
-                cout << "you are already in default menu\n\n";
-                break;
-
-            default:
-                cout << "\nNOT a comand. Type '?' or any other comand\n\n";
-                break;
-            }
+        if (it != std::end(cmds))
+        {
+            index = it - cmds.begin();
+            if (index == 1)
+                {
+                    _help(cmds);
+                    continue;
+                }
+            return index;
         }
         else
         {
-            if (std::cin.rdbuf()->in_avail() > 0)
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                
-            cout << "\n<" << cmdTypes[cmdType] << '>'
-                 << "CHOOSE TABLE"
-                 << "\n - 1 Car\n - 2 Manager\n - 3 Deal\n - 4 Client\n - b Break to First menu\n - e Save & Exit\n - ? Help\nInput comand: ";
-            cin >> comand;
-
-            switch (comand)
-            {
-            case '1':
-                flagMenu = true;
-                //cout << "\n<1 comand: " << cmdTypes[cmdType] << " MODEL chosen>\n";
-                
-                cmdCertain = 0;
-                flagReset = true;
-                break;
-            case '2':
-                flagMenu = true;
-                //cout << "\n<2 comand: " << cmdTypes[cmdType] << " MANAGER chosen>\n";
-                
-                cmdCertain = 1;
-                flagReset = true;
-                break;
-            case '3':
-                flagMenu = true;
-                //cout << "\n<3 comand: " << cmdTypes[cmdType] << " DEAL chosen>\n";
-                
-                
-                cmdCertain = 2;
-                flagReset = true;
-                break;
-            case '4':
-                flagMenu = true;
-                //cout << "\n<3 comand: " << cmdTypes[cmdType] << " CLIENT chosen>\n";
-                
-                cmdCertain = 3;
-                flagReset = true;
-                break;
-            case 'b':
-                cout << "return to base menu\n\n";
-                flagMenu = true;
-                flagReset = false;
-                break;
-            case 'e':
-                cout << "\n<Save & Exit comand>\n\n";
-                break;
-            case '?':
-                cout << "\n<? comand: HELP chosen>\n\n"; ////////////////////////////////////////////////////
-                _help();
-                break;
-            default:
-                cout << "\nNOT a comand. Type '?' or any other comand\n\n";
-                break;
-            }
+            cout << "что-то странное ввели\n";
+            continue;
         }
-        if (flagReset)
-        {
-            flagReset = false;
-            flagMenu = true;
-            switch (cmdType)
-            {
-            case 0:
-                _select(cmdCertain);
-                break;
-            case 1:
-                _insert(cmdCertain);
-                break;
-            case 2:
-                _remove(cmdCertain);
-                break;
-            default:
-                break;
-            }
-        }
-        if (comand == 'e')
-        {
-            if (std::cin.rdbuf()->in_avail() > 0)
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            cout << "Are you shure? type 'n' if you want to stay in or any other key: ";
-            comand = std::cin.get();
-            comand = ((comand == 'n') || (comand == 'N')) ? 'n' : 'e';
-        }
-
-    } while (comand != 'e');
+        
+    } while (true);
+    
+    return -1;
 }
 
 void Interface::_select(short curr)
@@ -195,19 +157,19 @@ void Interface::_select(short curr)
 
     switch (curr)
     {
-    case 0: //model
+    case 3: //model
         req.tableID = TABLE_CARS;
         break;
 
-    case 1: //manager
+    case 4: //manager
         req.tableID = TABLE_MANAGERS;
         break;
 
-    case 2: //deal
+    case 5: //deal
         req.tableID = TABLE_SALES;
         break;
 
-    case 3: //client
+    case 6: //client
         req.tableID = TABLE_CLIENTS;
         break;
 
@@ -216,13 +178,12 @@ void Interface::_select(short curr)
         return;
     }
 
-    if (curr != 2)
+    if (curr != 5)
     {
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        cout << "input " << fields[req.tableID] << ": ";
-        string str;
-        cin >> str;
+        cout << "введите " << fields[req.tableID] << " для поиска: ";
+        string str = _getString("");
         req.strings.push_back(str);
     }
     else
@@ -259,7 +220,7 @@ void Interface::_select(short curr)
         case TABLE_MANAGERS:
             cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
             cout << std::setw(padding) << "SUM of DEALS: " << "<" << oneBlock->ints[1] << ">\n";
-            cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << "$>||\n";
+            cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << ">\n";
             cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">\n";
             cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">\n";
             cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">\n";
@@ -297,7 +258,7 @@ void Interface::_insert(short curr)
 
     switch (curr)
     {
-        case 0: //model
+        case 3: //model
             req.tableID = TABLE_CARS;
             req.ints.push_back(_getNumber("set id(int): "));
             req.strings.push_back(_getString("set model: "));
@@ -309,7 +270,7 @@ void Interface::_insert(short curr)
             req.strings.push_back(_getString("add your comment: "));
             break;
 
-        case 1: //manager
+        case 4: //manager
             req.tableID = TABLE_MANAGERS;
             req.ints.push_back(_getNumber("set id(int): "));
             req.ints.push_back(_getNumber("set sum of deals(int): "));
@@ -319,7 +280,7 @@ void Interface::_insert(short curr)
             req.strings.push_back(_getString("add your comment: "));
             break;
 
-        case 2: //deal
+        case 5: //deal
             req.tableID = TABLE_SALES;
             req.ints.push_back(_getNumber("set id(int): "));
             req.ints.push_back(_getNumber("set scar id(int): "));
@@ -327,7 +288,7 @@ void Interface::_insert(short curr)
             req.strings.push_back(_getString("add your comment: "));
             break;
 
-        case 3: //client
+        case 6: //client
             req.tableID = TABLE_CLIENTS;
             req.ints.push_back(_getNumber("set id(int): "));
             req.ints.push_back(_getNumber("set status of usual(int): "));
@@ -364,22 +325,22 @@ void Interface::_remove(short curr)
     switch (curr)
     {
     //model
-    case 0: 
+    case 3: 
         req.tableID = TABLE_CARS;
         break;
 
     //manager
-    case 1: 
+    case 4: 
         req.tableID = TABLE_MANAGERS;
         break;
 
     //deal
-    case 2: 
+    case 5: 
         req.tableID = TABLE_SALES;
         break;
 
     //client
-    case 3: 
+    case 6: 
         req.tableID = TABLE_CLIENTS;
         break;
 
@@ -388,7 +349,7 @@ void Interface::_remove(short curr)
         return;
     }
 
-    if (curr != 2)
+    if (curr != 5)
     {
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
@@ -407,23 +368,23 @@ void Interface::_remove(short curr)
     cout << "result: " << db->REMOVE(req) << "\n";
 }
 
-void Interface::_help()
+void Interface::_help(vector<char> cmds)
 {
     cout << "\n_____________help_________________\n";
     cout << "2 sections of menu:\n";
     cout << "First section:\n";
-    cout << "comand '1' - SELECT\n";
-    cout << "comand '2' - INSERT or UPDATE\n";
-    cout << "comand '3' - DELETE\n-----------------------------\n";
+    cout << "comand '" << cmds[3] << "' - SELECT\n";
+    cout << "comand '" << cmds[4] << "' - INSERT or UPDATE\n";
+    cout << "comand '" << cmds[5] << "' - DELETE\n-----------------------------\n";
     cout << "Second section:\n";
-    cout << "comand '1' - CAR\n";
-    cout << "comand '2' - MANAGER\n";
-    cout << "comand '3' - SALES\n";
-    cout << "comand '4' - CLIENTS\n";
+    cout << "comand '" << cmds[3] << "' - CAR\n";
+    cout << "comand '" << cmds[4] << "' - MANAGER\n";
+    cout << "comand '" << cmds[5] << "' - SALES\n";
+    cout << "comand '" << cmds[6] << "' - CLIENTS\n";
     cout << "-----------------------------------\n";
     cout << "Common logic: first of all choice type of \ncomand (1 select, 2 insert/update, 3 delete)";
     cout << "after that, choice \ntable (1 cars, 2 managers, 3 sales, 4 clients)\n\n";
-    cout << "to exit and save type 'e', to go to start menu type 'b', and '?' for watch this text\n";
+    cout << "to exit and save type '" << cmds[0] << "', to go to start menu type '" << cmds[2] << "', and '" << cmds[1] << "' for watch this text\n";
     cout << "___________________________________\n\n";
 }
 
@@ -498,3 +459,161 @@ string Interface::_getString(string str)
     
     return data;
 }
+
+// void Interface::runDataBase()
+// {
+//     string cmdTypes[3] = { "SELECT", "INSERT or UPDATE", "DELETE" };
+
+//     char comand;
+//     bool flagMenu = true;
+//     bool flagReset = false;
+//     short cmdType = 0;
+//     short cmdCertain = 0;
+
+//     vector<char> cmds = {CMD_MENU_ITEM_1, CMD_MENU_ITEM_2, CMD_MENU_ITEM_3, CMD_MENU_ITEM_4, CMD_BREAK, CMD_HELP, CMD_EXIT,};
+    
+//     do
+//     {
+//         if (flagMenu)
+//         {
+//             if (std::cin.rdbuf()->in_avail() > 0)
+//                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            
+//             vector<string> menuComand = { "\nCHOOSE COMAND\n - " + cmds[0] + 
+//                                         " Select\n - " + cmds[1] + 
+//                                         " Insert/Update\n - " + cmds[2] + 
+//                                         " Delete\n - " + cmds[6] + " Save & Exit\n - " + 
+//                                         cmds[5] + " Help\nInput comand: "};
+
+//             cmdType = _menu(menuComand, cmds);
+//             comand = std::cin.get();
+
+//             switch (comand)
+//             {
+//             case CMD_MENU_ITEM_1:
+//                 flagMenu = false;            
+//                 cmdType = 0;
+//                 break;
+
+//             case CMD_MENU_ITEM_2:
+//                 flagMenu = false;       
+//                 cmdType = 1;
+//                 break;
+
+//             case CMD_MENU_ITEM_3:
+//                 flagMenu = false;  
+//                 cmdType = 2;
+//                 break;
+
+//             case CMD_HELP:
+//                 cout << "\n<? comand: HELP chosen>\n\n"; ////////////////////////////////////////////////////
+//                 _help();
+//                 break;
+
+//             case CMD_EXIT:
+//                 cout << "\n<Save & Exit comand>\n";      
+//                 break;
+
+//             case CMD_BREAK:
+//                 cout << "you are already in default menu\n\n";
+//                 break;
+
+//             default:
+//                 cout << "\nNOT a comand. Type '?' or any other comand\n\n";
+//                 break;
+//             }
+//         }
+//         else
+//         {
+//             if (std::cin.rdbuf()->in_avail() > 0)
+//                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            
+
+//             vector<string> menuTable = { "\n<" + cmdTypes[cmdType] +"CHOOSE TABLE\n - " + CMD_MENU_ITEM_1 +
+//                                         " Car\n - " + CMD_MENU_ITEM_2 + " Manager\n - " + CMD_MENU_ITEM_3 + 
+//                                         " Deal\n - " + CMD_MENU_ITEM_4 + " Client\n - " + CMD_BREAK +
+//                                         " Break to First menu\n - " + CMD_EXIT + " Save & Exit\n - " + CMD_HELP +
+//                                         " Help\nInput comand: "};
+
+//             cmdCertain = _menu(menuTable, cmds);
+//             comand = std::cin.get();
+
+//             switch (comand)
+//             {
+//             case CMD_MENU_ITEM_1:
+//                 flagMenu = true;
+//                 //cout << "\n<1 comand: " << cmdTypes[cmdType] << " MODEL chosen>\n";
+                
+//                 cmdCertain = 0;
+//                 flagReset = true;
+//                 break;
+//             case CMD_MENU_ITEM_2:
+//                 flagMenu = true;
+//                 //cout << "\n<2 comand: " << cmdTypes[cmdType] << " MANAGER chosen>\n";
+                
+//                 cmdCertain = 1;
+//                 flagReset = true;
+//                 break;
+//             case CMD_MENU_ITEM_3:
+//                 flagMenu = true;
+//                 //cout << "\n<3 comand: " << cmdTypes[cmdType] << " DEAL chosen>\n";
+                
+                
+//                 cmdCertain = 2;
+//                 flagReset = true;
+//                 break;
+//             case CMD_MENU_ITEM_4:
+//                 flagMenu = true;
+//                 //cout << "\n<3 comand: " << cmdTypes[cmdType] << " CLIENT chosen>\n";
+                
+//                 cmdCertain = 3;
+//                 flagReset = true;
+//                 break;
+//             case CMD_BREAK:
+//                 cout << "return to base menu\n\n";
+//                 flagMenu = true;
+//                 flagReset = false;
+//                 break;
+//             case CMD_EXIT:
+//                 cout << "\n<Save & Exit comand>\n\n";
+//                 break;
+//             case CMD_HELP:
+//                 cout << "\n<? comand: HELP chosen>\n\n"; ////////////////////////////////////////////////////
+//                 _help();
+//                 break;
+//             default:
+//                 cout << "\nNOT a comand. Type '?' or any other comand\n\n";
+//                 break;
+//             }
+//         }
+//         if (flagReset)
+//         {
+//             flagReset = false;
+//             flagMenu = true;
+//             switch (cmdType)
+//             {
+//             case 0:
+//                 _select(cmdCertain);
+//                 break;
+//             case 1:
+//                 _insert(cmdCertain);
+//                 break;
+//             case 2:
+//                 _remove(cmdCertain);
+//                 break;
+//             default:
+//                 break;
+//             }
+//         }
+//         if (comand == CMD_EXIT)
+//         {
+//             if (std::cin.rdbuf()->in_avail() > 0)
+//                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+//             cout << "Are you shure? type 'n' if you want to stay in or any other key: ";
+//             comand = std::cin.get();
+//             comand = ((comand == 'n') || (comand == 'N')) ? 'n' : CMD_EXIT;
+//         }
+
+//     } while (comand != CMD_EXIT);
+// }
