@@ -49,43 +49,47 @@ void Interface::runDataBase()
         {
             if (std::cin.rdbuf()->in_avail() > 0)
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            cout << "First menu\n - 1 Select\n - 2 Insert/Update\n - 3 Delete\nInput comand (or type '?'): ";
+            cout << "\nCHOOSE COMAND\n - 1 Select\n - 2 Insert/Update\n - 3 Delete\n - b Break to First menu\n - e Save & Exit\n - ? Help\nInput comand: ";
             cin >> comand;
             switch (comand)
             {
             case '1':
                 flagMenu = false;
-                cout << "\n<1 comand: SELECT chosen>\n";
+                //cout << "\n<1 comand: SELECT chosen>\n";
+                
                 cmdType = 0;
                 break;
 
             case '2':
                 flagMenu = false;
-                cout << "\n<2 comand: INSERT or UPDATE chosen>\n";
+                //cout << "\n<2 comand: INSERT or UPDATE chosen>\n";
+                
                 cmdType = 1;
                 break;
 
             case '3':
                 flagMenu = false;
-                cout << "\n<3 comand: DELETE chosen>\n";
+                //cout << "\n<3 comand: DELETE chosen>\n";
+                
                 cmdType = 2;
                 break;
 
             case '?':
-                cout << "\n<? comand: HELP chosen>\n"; ////////////////////////////////////////////////////
+                cout << "\n<? comand: HELP chosen>\n\n"; ////////////////////////////////////////////////////
                 _help();
                 break;
 
             case 'e':
-                cout << "\n<exit comand>\n";
+                cout << "\n<Save & Exit comand>\n";
+                
                 break;
 
-            case 's':
-                cout << "you are already in default menu\n";
+            case 'b':
+                cout << "you are already in default menu\n\n";
                 break;
 
             default:
-                cout << "\nNOT a comand. Type '?' or any other comand\n";
+                cout << "\nNOT a comand. Type '?' or any other comand\n\n";
                 break;
             }
         }
@@ -94,51 +98,56 @@ void Interface::runDataBase()
             if (std::cin.rdbuf()->in_avail() > 0)
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 
-            cout << "Second menu\nFirst choise: " << cmdType + 1
-                 << " <" << cmdTypes[cmdType] << '>'
-                 << "\n - 1 Model\n - 2 Manager\n - 3 Deal\n - 3 Client\nInput comand (or type '?'): ";
+            cout << "\n<" << cmdTypes[cmdType] << '>'
+                 << "CHOOSE TABLE"
+                 << "\n - 1 Car\n - 2 Manager\n - 3 Deal\n - 4 Client\n - b Break to First menu\n - e Save & Exit\n - ? Help\nInput comand: ";
             cin >> comand;
 
             switch (comand)
             {
             case '1':
                 flagMenu = true;
-                cout << "\n<1 comand: " << cmdTypes[cmdType] << " MODEL chosen>\n";
+                //cout << "\n<1 comand: " << cmdTypes[cmdType] << " MODEL chosen>\n";
+                
                 cmdCertain = 0;
                 flagReset = true;
                 break;
             case '2':
                 flagMenu = true;
-                cout << "\n<2 comand: " << cmdTypes[cmdType] << " MANAGER chosen>\n";
+                //cout << "\n<2 comand: " << cmdTypes[cmdType] << " MANAGER chosen>\n";
+                
                 cmdCertain = 1;
                 flagReset = true;
                 break;
             case '3':
                 flagMenu = true;
-                cout << "\n<3 comand: " << cmdTypes[cmdType] << " DEAL chosen>\n";
+                //cout << "\n<3 comand: " << cmdTypes[cmdType] << " DEAL chosen>\n";
+                
+                
                 cmdCertain = 2;
                 flagReset = true;
                 break;
             case '4':
                 flagMenu = true;
-                cout << "\n<3 comand: " << cmdTypes[cmdType] << " CLIENT chosen>\n";
+                //cout << "\n<3 comand: " << cmdTypes[cmdType] << " CLIENT chosen>\n";
+                
                 cmdCertain = 3;
                 flagReset = true;
                 break;
-            case 's':
-                cout << "return to base menu\n";
+            case 'b':
+                cout << "return to base menu\n\n";
                 flagMenu = true;
                 flagReset = false;
                 break;
             case 'e':
-                cout << "\n<exit comand>\n";
+                cout << "\n<Save & Exit comand>\n\n";
                 break;
             case '?':
-                cout << "\n<? comand: HELP chosen>\n"; ////////////////////////////////////////////////////
+                cout << "\n<? comand: HELP chosen>\n\n"; ////////////////////////////////////////////////////
                 _help();
                 break;
             default:
-                cout << "\nNOT a comand. Type '?' or any other comand\n";
+                cout << "\nNOT a comand. Type '?' or any other comand\n\n";
                 break;
             }
         }
@@ -237,41 +246,41 @@ void Interface::_select(short curr)
         switch (oneBlock->tableID)
         {
         case TABLE_CARS:
-            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "MODEL: " << "<" << oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "YEAR: " << "<" << oneBlock->strings[1] << ">||\n";
-            cout << std::setw(padding) << "COLOR: " << "<" << oneBlock->strings[2] << ">||\n";
-            cout << std::setw(padding) << "TECH CHAR: " << "<" << oneBlock->strings[3] << ">||\n";
-            cout << std::setw(padding) << "EQUIPMENT: " << "<" << oneBlock->strings[4] << ">||\n";
-            cout << std::setw(padding) << "PRICE: " << "<" << oneBlock->strings[5] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[6] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
+            cout << std::setw(padding) << "MODEL: " << "<" << oneBlock->strings[0] << ">\n";
+            cout << std::setw(padding) << "YEAR: " << "<" << oneBlock->strings[1] << ">\n";
+            cout << std::setw(padding) << "COLOR: " << "<" << oneBlock->strings[2] << ">\n";
+            cout << std::setw(padding) << "TECH CHAR: " << "<" << oneBlock->strings[3] << ">\n";
+            cout << std::setw(padding) << "EQUIPMENT: " << "<" << oneBlock->strings[4] << ">\n";
+            cout << std::setw(padding) << "PRICE: " << "<" << oneBlock->strings[5] << ">\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[6] << ">\n";
             break;
 
         case TABLE_MANAGERS:
-            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "SUM of DEALS: " << "<" << oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
+            cout << std::setw(padding) << "SUM of DEALS: " << "<" << oneBlock->ints[1] << ">\n";
             cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << "$>||\n";
-            cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">||\n";
+            cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">\n";
+            cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">\n";
             break;
 
         case TABLE_SALES:
-            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "CAR ID: " << "<" << oneBlock->ints[1] << ">||\n";
-            cout << std::setw(padding) << "SALE DATE: " << "<" << oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
+            cout << std::setw(padding) << "CAR ID: " << "<" << oneBlock->ints[1] << ">\n";
+            cout << std::setw(padding) << "SALE DATE: " << "<" << oneBlock->strings[0] << ">\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[1] << ">\n";
             break;
 
         case TABLE_CLIENTS:
-            cout << std::setw(padding) << "ID: " << "<"  << oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "PHONE: " << "<"  << oneBlock->ints[1] << ">||\n";
-            cout << std::setw(padding) << "STATUS: " << "<"  << oneBlock->ints[2] << ">||\n";
-            cout << std::setw(padding) << "DISCOUNT %: " << "<"  << oneBlock->ints[3] << ">||\n";
-            cout << std::setw(padding) << "Name: " << "<"  << oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "BIRTHDATE: " << "<"  << oneBlock->strings[1] << ">||\n";
-            cout << std::setw(padding) << "PASSPORT DATA: " << "<"  << oneBlock->strings[2] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<"  << oneBlock->strings[3] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<"  << oneBlock->ints[0] << ">\n";
+            cout << std::setw(padding) << "STATUS: " << "<"  << oneBlock->ints[1] << ">\n";
+            cout << std::setw(padding) << "DISCOUNT: " << "<"  << oneBlock->ints[2] << ">\n";
+            cout << std::setw(padding) << "NAME: " << "<"  << oneBlock->strings[0] << ">\n";
+            cout << std::setw(padding) << "PHONE: " << "<"  << oneBlock->strings[1] << ">\n";
+            cout << std::setw(padding) << "BIRTHDATE: " << "<"  << oneBlock->strings[2] << ">\n";
+            cout << std::setw(padding) << "PASSPORT DATA: " << "<"  << oneBlock->strings[3] << ">\n";
+            cout << std::setw(padding) << "COMMENT: " << "<"  << oneBlock->strings[4] << ">\n";
             break;
 
         default:
@@ -321,10 +330,10 @@ void Interface::_insert(short curr)
         case 3: //client
             req.tableID = TABLE_CLIENTS;
             req.ints.push_back(_getNumber("set id(int): "));
-            req.ints.push_back(_getNumber("set phone number(int) (like: 89349214543): "));
             req.ints.push_back(_getNumber("set status of usual(int): "));
             req.ints.push_back(_getNumber("set discount precentage(int): "));
             req.strings.push_back(_getString("set name of buyer: "));
+            req.strings.push_back(_getString("set phone number (like: 89349214543): "));
             req.strings.push_back(_getString("set birthdate: "));
             req.strings.push_back(_getString("set pasport data: "));
             req.strings.push_back(_getString("add your comment: "));
@@ -414,7 +423,7 @@ void Interface::_help()
     cout << "-----------------------------------\n";
     cout << "Common logic: first of all choice type of \ncomand (1 select, 2 insert/update, 3 delete)";
     cout << "after that, choice \ntable (1 cars, 2 managers, 3 sales, 4 clients)\n\n";
-    cout << "to exit type 'e', to go to start menu type 's', and '?' for watch this text\n";
+    cout << "to exit and save type 'e', to go to start menu type 'b', and '?' for watch this text\n";
     cout << "___________________________________\n\n";
 }
 
