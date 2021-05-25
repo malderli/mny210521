@@ -237,41 +237,41 @@ void Interface::_select(short curr)
         switch (oneBlock->tableID)
         {
         case TABLE_CARS:
-            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "PRICE: " << "<" << std::setw(paddNext)<< oneBlock->ints[1] << ">||\n";
-            cout << std::setw(padding) << "MODEL: " << "<" << std::setw(paddNext)<< oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "YEAR: " << "<" << std::setw(paddNext)<< oneBlock->strings[1] << ">||\n";
-            cout << std::setw(padding) << "COLOR: " << "<" << std::setw(paddNext)<< oneBlock->strings[2] << ">||\n";
-            cout << std::setw(padding) << "TECH CHAR: " << "<" << std::setw(paddNext)<< oneBlock->strings[3] << ">||\n";
-            cout << std::setw(padding) << "EQUIPMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[4] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[5] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "MODEL: " << "<" << oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "YEAR: " << "<" << oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "COLOR: " << "<" << oneBlock->strings[2] << ">||\n";
+            cout << std::setw(padding) << "TECH CHAR: " << "<" << oneBlock->strings[3] << ">||\n";
+            cout << std::setw(padding) << "EQUIPMENT: " << "<" << oneBlock->strings[4] << ">||\n";
+            cout << std::setw(padding) << "PRICE: " << "<" << oneBlock->strings[5] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[6] << ">||\n";
             break;
 
         case TABLE_MANAGERS:
-            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "SUM of DEALS: " << "<" << std::setw(paddNext)<< oneBlock->ints[1] << ">||\n";
-            cout << std::setw(padding) << "total erned money: " << "<" << std::setw(paddNext)<< oneBlock->ints[2] << "$>||\n";
-            cout << std::setw(padding) << "Name: " << "<" << std::setw(paddNext)<< oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "BIRTHDATE: " << "<" << std::setw(paddNext)<< oneBlock->strings[1] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[2] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "SUM of DEALS: " << "<" << oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << "$>||\n";
+            cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">||\n";
             break;
 
         case TABLE_SALES:
-            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "CAR ID: " << "<" << std::setw(paddNext)<< oneBlock->ints[1] << ">||\n";
-            cout << std::setw(padding) << "SALE DATE: " << "<" << std::setw(paddNext)<< oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext)<< oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "CAR ID: " << "<" << oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "SALE DATE: " << "<" << oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[1] << ">||\n";
             break;
 
         case TABLE_CLIENTS:
-            cout << std::setw(padding) << "ID: " << "<" << std::setw(paddNext) << oneBlock->ints[0] << ">||\n";
-            cout << std::setw(padding) << "PHONE: " << "<" << std::setw(paddNext) << oneBlock->ints[1] << ">||\n";
-            cout << std::setw(padding) << "STATUS: " << "<" << std::setw(paddNext) << oneBlock->ints[2] << ">||\n";
-            cout << std::setw(padding) << "DISCOUNT %: " << "<" << std::setw(paddNext) << oneBlock->ints[3] << ">||\n";
-            cout << std::setw(padding) << "Name: " << "<" << std::setw(paddNext) << oneBlock->strings[0] << ">||\n";
-            cout << std::setw(padding) << "BIRTHDATE: " << "<" << std::setw(paddNext) << oneBlock->strings[1] << ">||\n";
-            cout << std::setw(padding) << "PASSPORT DATA: " << "<" << std::setw(paddNext) << oneBlock->strings[2] << ">||\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << std::setw(paddNext) << oneBlock->strings[3] << ">||\n";
+            cout << std::setw(padding) << "ID: " << "<"  << oneBlock->ints[0] << ">||\n";
+            cout << std::setw(padding) << "PHONE: " << "<"  << oneBlock->ints[1] << ">||\n";
+            cout << std::setw(padding) << "STATUS: " << "<"  << oneBlock->ints[2] << ">||\n";
+            cout << std::setw(padding) << "DISCOUNT %: " << "<"  << oneBlock->ints[3] << ">||\n";
+            cout << std::setw(padding) << "Name: " << "<"  << oneBlock->strings[0] << ">||\n";
+            cout << std::setw(padding) << "BIRTHDATE: " << "<"  << oneBlock->strings[1] << ">||\n";
+            cout << std::setw(padding) << "PASSPORT DATA: " << "<"  << oneBlock->strings[2] << ">||\n";
+            cout << std::setw(padding) << "COMMENT: " << "<"  << oneBlock->strings[3] << ">||\n";
             break;
 
         default:
@@ -291,12 +291,12 @@ void Interface::_insert(short curr)
         case 0: //model
             req.tableID = TABLE_CARS;
             req.ints.push_back(_getNumber("set id(int): "));
-            req.ints.push_back(_getNumber("set price(int): "));
             req.strings.push_back(_getString("set model: "));
             req.strings.push_back(_getString("set year: "));
             req.strings.push_back(_getString("set color: "));
             req.strings.push_back(_getString("set technician characteristics: "));
             req.strings.push_back(_getString("set equipment: "));
+            req.strings.push_back(_getString("set price(int): "));
             req.strings.push_back(_getString("add your comment: "));
             break;
 
