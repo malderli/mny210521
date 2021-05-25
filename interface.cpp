@@ -413,22 +413,6 @@ bool Interface::_is_number(const std::string &s)
     }
 }
 
-int Interface::_getNumber()
-{
-    string data;
-
-    do
-    {
-        if (std::cin.rdbuf()->in_avail() > 0)
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        
-        cout << "input data for search (integer): ";
-        cin >> data;
-    } while (!_is_number(data));
-
-    return stoi(data);
-}
-
 int Interface::_getNumber(string str)
 {
     string data;
