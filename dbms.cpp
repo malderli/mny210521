@@ -3,7 +3,7 @@
 DBMS::DBMS(string dbFolder, bool isInit)
 {
     // DB configuration info setup
-    dbTableStruct[TABLE_CARS] = 0xC0;
+    dbTableStruct[TABLE_CARS] = 0x80;
     dbTableStruct[TABLE_MANAGERS] = 0x38;
     dbTableStruct[TABLE_SALES] = 0x0C;
     dbTableStruct[TABLE_CLIENTS] = 0xF0;

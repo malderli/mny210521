@@ -2,12 +2,12 @@ TABLE_CARS
     ID: 0
     FIELDS:
         ID          int
-        PRICE       int
         MODEL       string
         YEAR        string
         COLOR       string
         TECH        string
         EQUIP       string
+        PRICE       string
         COMMENT     string
 
 TABLE_MANAGERS
