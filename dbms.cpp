@@ -109,6 +109,60 @@ vector<rowData *> DBMS::GET(rowData toGet)
     return res;
 }
 
+vector<rowData *> DBMS::GET(rowData toGet, short mask)
+{
+    vector<rowData *> res;
+    bool fits;
+
+    short vPosInt;
+    short vPosString;
+
+    short intsOffset;
+    short stringsOffset;
+
+    if (!mask)
+        return tdata[toGet.tableID];
+
+    if (!tdata[toGet.tableID].size())
+        return res;
+
+    intsOffset = dbTableSize[toGet.tableID] - 1;
+    stringsOffset = intsOffset - tdata[toGet.tableID][0]->ints.size();
+
+    for (rowData *currData : tdata[toGet.tableID]) {
+        vPosInt = 0;
+        vPosString = 0;
+        fits = true;
+
+        for (int col = dbTableSize[toGet.tableID] - 1; col >= 0; col--) {
+            if (!((mask >> col) & 0x01))
+                continue;
+
+            if ((dbTableStruct[toGet.tableID] >> col) & 0x01) {
+                if (currData->ints[intsOffset - col] != toGet.ints[vPosInt]) {
+                    fits = false;
+                    break;
+                }
+
+                vPosInt++;
+            }
+            else {
+                if (currData->strings[stringsOffset - col] != toGet.strings[vPosString]) {
+                    fits = false;
+                    break;
+                }
+
+                vPosString++;
+            }
+        }
+
+        if (fits)
+            res.push_back(currData);
+    }
+
+    return res;
+}
+
 bool DBMS::REMOVE(rowData data)
 {
     int startSize;
