@@ -22,7 +22,7 @@ void DBMS_test(DBMS *db)
     tdata.strings.push_back("good guy");
 
     toget.tableID = 1;
-    toget.ints.push_back(0);
+    toget.ints.push_back(1);
     toget.strings.push_back("va");
 
     db->ADD(tdata);

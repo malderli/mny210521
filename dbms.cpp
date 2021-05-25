@@ -120,6 +120,9 @@ vector<rowData *> DBMS::GET(rowData toGet, short mask)
     short intsOffset;
     short stringsOffset;
 
+    if (!mask)
+        return tdata[toGet.tableID];
+
     if (!tdata[toGet.tableID].size())
         return res;
 
