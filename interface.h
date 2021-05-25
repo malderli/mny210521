@@ -19,7 +19,6 @@ private:
     void _insert(short curr);
     void _remove(short curr);
     bool _is_number(const std::string &s);
-    int _getNumber();
     int _getNumber(string str);
     string _getString(string str);
     void _help();
