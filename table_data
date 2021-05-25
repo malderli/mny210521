@@ -39,3 +39,14 @@ TABLE_CLIENTS
         BRITHDATE   string
         PASSDATA    string
         COMMENT     string
+
+
+SELECTION 1:
+    Процент постоянных клиентов
+    IN:
+        -
+    OUT:
+        calc()
+
+SELECTION 2:
+
