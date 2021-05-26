@@ -8,8 +8,8 @@
                 "-g",
                 "main.cpp",
                 "interface.cpp",
-                "dbms.cpp",
-                "-std=c++17", 
+                "dbms.cpp", 
+                "-std=c++17",
                 "-o",
                 "main"
             ],
