@@ -9,6 +9,7 @@
                 "main.cpp",
                 "interface.cpp",
                 "dbms.cpp", 
+                "-std=c++17",
                 "-o",
                 "main"
             ],
