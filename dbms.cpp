@@ -18,19 +18,11 @@ DBMS::DBMS(string dbFolder, bool isInit)
 
     if (isInit)
         readDB();
-
-    treader[TABLE_CARS].open(dbPath + TABLE_CARS_SPATH, ios::out);
-    treader[TABLE_MANAGERS].open(dbPath + TABLE_MANAGERS_SPATH, ios::out);
-    treader[TABLE_SALES].open(dbPath + TABLE_SALES_SPATH, ios::out);
-    treader[TABLE_CLIENTS].open(dbPath + TABLE_CLIENTS_SPATH, ios::out);
 }
 
 DBMS::~DBMS()
 {
     saveDB();
-    
-    for (int tid = 0; tid < NUM_OF_TABLES; tid++)
-        treader[tid].close();
 }
 
 void DBMS::readDB()
@@ -73,6 +65,11 @@ void DBMS::readDB()
 
 void DBMS::saveDB()
 {
+    treader[TABLE_CARS].open(dbPath + TABLE_CARS_SPATH, ios::out);
+    treader[TABLE_MANAGERS].open(dbPath + TABLE_MANAGERS_SPATH, ios::out);
+    treader[TABLE_SALES].open(dbPath + TABLE_SALES_SPATH, ios::out);
+    treader[TABLE_CLIENTS].open(dbPath + TABLE_CLIENTS_SPATH, ios::out);
+
     for (int tid = 0; tid < NUM_OF_TABLES; tid++)
         for (rowData *currData : tdata[tid]) {
             for (int i : currData->ints)
@@ -80,6 +77,9 @@ void DBMS::saveDB()
             for (string s : currData->strings)
                 treader[tid] << s << '\n';
         }
+
+    for (int tid = 0; tid < NUM_OF_TABLES; tid++)
+        treader[tid].close();
 }
 
 void DBMS::ADD(rowData data)
