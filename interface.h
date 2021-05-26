@@ -21,9 +21,13 @@ private:
     void _select(short curr);
     void _insert(short curr);
     void _remove(short curr);
+    void _analitic(short curr);
     bool _is_number(const std::string &s);
     int _getNumber(string str);
     int _menu(string, vector<char>);
+    vector<rowData *> _showPrecentage(vector<rowData *>, int, bool);
+    //void _showData(vector<rowData *>);
+    void _showData(vector<rowData *>, short = 0xFF);
     string _getString(string str);
     void _help(vector<char>);
 

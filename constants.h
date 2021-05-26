@@ -16,6 +16,7 @@
 #define CMD_MENU_ITEM_2 '2'
 #define CMD_MENU_ITEM_3 '3'
 #define CMD_MENU_ITEM_4 '4'
+#define CMD_MENU_ITEM_5 '5'
 #define CMD_BREAK 'b'
 #define CMD_EXIT 'e'
 #define CMD_HELP '?'
