@@ -24,7 +24,13 @@ int main()
     Interface interface;
     string path = current_path();
     path += "/DataBase";
-    //struct BaseData initDb = interface.getInitData();
+
+    struct BaseData initDb = interface.getInitData();
+    if (initDb.isInit)
+    {
+        path = initDb.path;
+    }
+    
     DBMS db(path, 1);
     
 

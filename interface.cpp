@@ -12,7 +12,7 @@ struct BaseData Interface::getInitData()
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    cout << "Здравствуйте\nу вас уже есть база данных(д/Н): ";
+    cout << "Здравствуйте\nхотите ввести путь к базе данных(д/Н): ";
     //char baseExist = std::cin.get();
     string baseExist = _getString("");
     DEBUGER("test", baseExist)
@@ -20,12 +20,19 @@ struct BaseData Interface::getInitData()
     struct BaseData outData;
     outData.isInit = ((baseExist == "Д") || (baseExist == "д")) ? true : false;
     DEBUGER("уже есть база данных: ", outData.isInit)
+    if (outData.isInit)
+    {
+        if (std::cin.rdbuf()->in_avail() > 0)
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    if (std::cin.rdbuf()->in_avail() > 0)
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cout << "Введите путь к базе данных: ";
+        cin >> outData.path;
+    }
+    else
+    {
+        outData.path = "";
+    }
     
-    cout << "Введите путь к базе данных: ";
-    cin >> outData.path;
     return outData;
 }
 
