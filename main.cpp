@@ -6,11 +6,7 @@
 #include "constants.h"
 #include "dbms.h"
 #include "interface.h"
-
-#include <iostream>
 #include <string>
-#include <filesystem>
-#include <unistd.h>
 
 using std::filesystem::current_path;
 
@@ -23,6 +19,7 @@ int main()
 
     Interface interface;
     string path = current_path();
+    //cout << "\n<<" << "current directory" << "|" << path << ">>\n";
     path += "/DataBase";
 
     struct BaseData initDb = interface.getInitData();
@@ -30,15 +27,10 @@ int main()
     {
         path = initDb.path;
     }
-    
-    DBMS db(path, 1);
-    
 
-    //DBMS db("/media/user/DATA/projects/mny210521/bb", 1);
+    DBMS db(path, 1);
 
     interface.setDb(&db);
     interface.runDataBase();
-
-    //DBMS_test(&db);
     return 0;
 }
