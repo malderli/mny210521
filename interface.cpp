@@ -239,7 +239,7 @@ void Interface::_select(short curr)
 
 void Interface::_analitic(short curr)
 {
-    string fields[7] {"Процент постоянных клиентов", "введите id сделки: ", "введите цвет машины: ", "Имена и телефоны клиентов", "\nвведите нижнюю границу (целое число): ", "\nвведите сначала нижнюю границу (целое число): ", "\nвведите верхнюю границу (целое число): "};
+    string fields[7] {"Процент постоянных клиентов", "введите id сделки: ", "введите цвет машины: ", "Имена и телефоны клиентов", "\nвведите верхнюю границу (целое число): ", "\nвведите сначала верхнюю границу (целое число): ", "\nвведите нижнюю границу (целое число): "};
     struct rowData req;
 
     DEBUGER("ANALITIC in func", "")
@@ -296,8 +296,10 @@ void Interface::_analitic(short curr)
                 if (oneBlock->ints[1] == 1)
                     usualCount++;
             }
-            cout << "\nПроцент постоянных клиентов: " << 100 * ((double)usualCount / result.size()) 
-                << "\nпостоянных: " << usualCount << " всего: " << result.size() << "\n"; 
+            cout << "_________________________________\n";
+            cout << "Процент постоянных клиентов: " << 100 * ((double)usualCount / result.size()) 
+                << "\nПостоянных: " << usualCount << " всего: " << result.size() << "\n";
+            cout << "_________________________________\n"; 
 
             return;
         }
@@ -327,7 +329,7 @@ void Interface::_analitic(short curr)
         {
             int data = _getNumber(fields[curr - 3]);
             req.ints.push_back(data);
-            cout << "сделка + машина\n";
+            cout << "\nИнформация о сделке:";
             vector<rowData *> result = db->GET(req);
             _showData(result);
             struct rowData reqCar;
@@ -337,6 +339,7 @@ void Interface::_analitic(short curr)
                 reqCar.ints.push_back(result[0]->ints[1]);
                 mask = 0x80;
                 vector<rowData *> resultNext = db->GET(reqCar, mask);
+                cout << "\nИнформация о машине:";
                 _showData(resultNext);
             }
             else
@@ -349,7 +352,7 @@ void Interface::_analitic(short curr)
         else
         {
             vector<string> cmds = {CMD_MENU_ITEM_1, CMD_MENU_ITEM_2, CMD_MENU_ITEM_3};
-            string text = "\n - " + cmds[0] + " Клиенты с скидкой меньше чем _\n - "
+            string text = "\nВыбор опции\n - " + cmds[0] + " Клиенты с скидкой меньше чем _\n - "
                                         + cmds[1] + " Клиенты с скидкой меньше чем _ и больше чем _\n - "  
                                         + cmds[2] + " Клиенты с скидкой больше чем _\nВвод: ";
             
@@ -368,7 +371,7 @@ void Interface::_analitic(short curr)
             
             case 1:
                 result = _showPrecentage(result, target,true);
-                targetNext =  _getNumber("\nТеперь верхняя граница скидки (целое число): ");
+                targetNext =  _getNumber("\nТеперь нижняя граница скидки (целое число): ");
                 final = _showPrecentage(result, targetNext,false);
                 cout << "Клиенты с скидкой меньше чем " << target << " и больше чем " << targetNext << "\n";
                 break;
@@ -388,7 +391,7 @@ void Interface::_analitic(short curr)
 }
 
 void Interface::_showData(vector<rowData *> result, short mask)
-{
+{  
     if (result.size() == 0)
     {
         cout << "\nВ таблице нет совпадений\n";
@@ -399,72 +402,72 @@ void Interface::_showData(vector<rowData *> result, short mask)
     {
         int padding = 17;
         int paddNext = 15;
-        cout << "_________блок данных__________\n\n";
+        cout << "\n__________ БЛОК ДАННЫХ __________\n\n";
 
         switch (oneBlock->tableID)
         {
         case TABLE_CARS:
-            if (mask & 0x80 > 0)
-                cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
-            if (mask & 0x40 > 0)
-                cout << std::setw(padding) << "МОДЕЛЬ: " << "<" << oneBlock->strings[0] << ">\n";
-            if (mask & 0x20 > 0)
-                cout << std::setw(padding) << "ГОД: " << "<" << oneBlock->strings[1] << ">\n";
-            if (mask & 0x10 > 0)
-                cout << std::setw(padding) << "ЦВЕТ: " << "<" << oneBlock->strings[2] << ">\n";
-            if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "ХАРАКТЕРИСТИКИ: " << "<" << oneBlock->strings[3] << ">\n";
-            if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "ВАРИАНТЫ КОМПЛЕКТАЦИИ: " << "<" << oneBlock->strings[4] << ">\n";
-            if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "ЦЕНА с ВАРИАНТАМИ КОМПЛЕКТАЦИИ: " << "<" << oneBlock->strings[5] << ">\n";
-            if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[6] << ">\n";
+            if ( (mask & 0x80) > 0)
+                cout << "ID:                             " << "<" << oneBlock->ints[0] << ">\n";
+            if ( (mask & 0x40) > 0)
+                cout << "МОДЕЛЬ:                         " << "<" << oneBlock->strings[0] << ">\n";
+            if ( (mask & 0x20) > 0)
+                cout << "ГОД:                            " << "<" << oneBlock->strings[1] << ">\n";
+            if ( (mask & 0x10) > 0)
+                cout << "ЦВЕТ:                           " << "<" << oneBlock->strings[2] << ">\n";
+            if ( (mask & 0x08) > 0)
+                cout << "ХАРАКТЕРИСТИКИ:                 " << "<" << oneBlock->strings[3] << ">\n";
+            if ( (mask & 0x04) > 0)
+                cout << "ВАРИАНТЫ КОМПЛЕКТАЦИИ:          " << "<" << oneBlock->strings[4] << ">\n";
+            if ( (mask & 0x02) > 0)
+                cout << "ЦЕНА с ВАРИАНТАМИ КОМПЛЕКТАЦИИ: " << "<" << oneBlock->strings[5] << ">\n";
+            if ( (mask & 0x01) > 0)
+                cout << "КОММЕНТАРИЙ:                    " << "<" << oneBlock->strings[6] << ">\n";
             break;
 
         case TABLE_MANAGERS:
-            if (mask & 0x20 > 0)
-                cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
-            if (mask & 0x10 > 0)
-                cout << std::setw(padding) << "КОЛИЧЕСТВО СДЕЛОК: " << "<" << oneBlock->ints[1] << ">\n";
-            if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "ОБЩИЙ ДОХОД: " << "<" << oneBlock->ints[2] << ">\n";
-            if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "ФИО: " << "<" << oneBlock->strings[0] << ">\n";
-            if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "ГОД РОЖДЕНИЯ: " << "<" << oneBlock->strings[1] << ">\n";
-            if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[2] << ">\n";
+            if ( (mask & 0x20) > 0)
+                cout << "ID:                " << "<" << oneBlock->ints[0] << ">\n";
+            if ( (mask & 0x10) > 0)
+                cout << "КОЛИЧЕСТВО СДЕЛОК: " << "<" << oneBlock->ints[1] << ">\n";
+            if ( (mask & 0x08) > 0)
+                cout << "ОБЩИЙ ДОХОД:       " << "<" << oneBlock->ints[2] << ">\n";
+            if ( (mask & 0x04) > 0)
+                cout << "ФИО:               " << "<" << oneBlock->strings[0] << ">\n";
+            if ( (mask & 0x02) > 0)
+                cout << "ГОД РОЖДЕНИЯ:      " << "<" << oneBlock->strings[1] << ">\n";
+            if ( (mask & 0x01) > 0)
+                cout << "КОММЕНТАРИЙ:       " << "<" << oneBlock->strings[2] << ">\n";
             break;
 
         case TABLE_SALES:
-            if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
-            if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "ID МАШИНЫ: " << "<" << oneBlock->ints[1] << ">\n";
-            if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "ДАТА ПРОДАЖИ: " << "<" << oneBlock->strings[0] << ">\n";
-            if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[1] << ">\n";
+            if ( (mask & 0x08) > 0)
+                cout << "ID:           " << "<" << oneBlock->ints[0] << ">\n";
+            if ( (mask & 0x04) > 0)
+                cout << "ID МАШИНЫ:    " << "<" << oneBlock->ints[1] << ">\n";
+            if ( (mask & 0x02) > 0)
+                cout << "ДАТА ПРОДАЖИ: " << "<" << oneBlock->strings[0] << ">\n";
+            if ( (mask & 0x01) > 0)
+                cout << "КОММЕНТАРИЙ:  " << "<" << oneBlock->strings[1] << ">\n";
             break;
 
         case TABLE_CLIENTS:
-            if (mask & 0x80 > 0)
-                cout << std::setw(padding) << "ID: " << "<"  << oneBlock->ints[0] << ">\n";
-            if (mask & 0x40 > 0)
-                cout << std::setw(padding) << "СТАТУС ПОСТОЯННОСТИ: " << "<"  << oneBlock->ints[1] << ">\n";
-            if (mask & 0x20 > 0)
-                cout << std::setw(padding) << "ПРОЦЕНТ СКИДКИ: " << "<"  << oneBlock->ints[2] << ">\n";
-            if (mask & 0x10 > 0)
-                cout << std::setw(padding) << "ФИО: " << "<"  << oneBlock->strings[0] << ">\n";
-            if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "ТЕЛЕФОН: " << "<"  << oneBlock->strings[1] << ">\n";
-            if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "ГОД РОЖДЕНИЯ: " << "<"  << oneBlock->strings[2] << ">\n";
-            if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "ПАСПОРТНЫЕ ДАННЫЕ: " << "<"  << oneBlock->strings[3] << ">\n";
-            if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<"  << oneBlock->strings[4] << ">\n";
+            if ( (mask & 0x80) > 0)
+                cout << "ID:                  " << "<"  << oneBlock->ints[0] << ">\n";
+            if ( (mask & 0x40) > 0)
+                cout << "СТАТУС ПОСТОЯННОСТИ: " << "<"  << oneBlock->ints[1] << ">\n";
+            if ( (mask & 0x20) > 0)
+                cout << "ПРОЦЕНТ СКИДКИ:      " << "<"  << oneBlock->ints[2] << ">\n";
+            if ( (mask & 0x10) > 0)
+                cout << "ФИО:                 " << "<"  << oneBlock->strings[0] << ">\n";
+            if ( (mask & 0x08) > 0)
+                cout << "ТЕЛЕФОН:             " << "<"  << oneBlock->strings[1] << ">\n";
+            if ( (mask & 0x04) > 0)
+                cout << "ГОД РОЖДЕНИЯ:        " << "<"  << oneBlock->strings[2] << ">\n";
+            if ( (mask & 0x02) > 0)
+                cout << "ПАСПОРТНЫЕ ДАННЫЕ:   " << "<"  << oneBlock->strings[3] << ">\n";
+            if ( (mask & 0x01) > 0)
+                cout << "КОММЕНТАРИЙ:         " << "<"  << oneBlock->strings[4] << ">\n";
             break;
 
         default:
@@ -472,7 +475,7 @@ void Interface::_showData(vector<rowData *> result, short mask)
             break;
         }
     }
-    cout << "_______________________\n";
+    cout << "_________________________________\n";
     return;
 }
 
