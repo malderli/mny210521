@@ -24,12 +24,12 @@ private:
     void _analitic(short curr);
     bool _is_number(const std::string &s);
     int _getNumber(string str);
-    int _menu(string, vector<char>);
+    int _menu(string, vector<string>);
     vector<rowData *> _showPrecentage(vector<rowData *>, int, bool);
     //void _showData(vector<rowData *>);
     void _showData(vector<rowData *>, short = 0xFF);
     string _getString(string str);
-    void _help(vector<char>);
+    void _help(vector<string>);
 
 public:
     Interface();

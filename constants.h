@@ -12,14 +12,14 @@
 #define TABLE_SALES_SPATH "/sales.dbt"
 #define TABLE_CLIENTS_SPATH "/clients.dbt"
 
-#define CMD_MENU_ITEM_1 '1'
-#define CMD_MENU_ITEM_2 '2'
-#define CMD_MENU_ITEM_3 '3'
-#define CMD_MENU_ITEM_4 '4'
-#define CMD_MENU_ITEM_5 '5'
-#define CMD_BREAK 'b'
-#define CMD_EXIT 'e'
-#define CMD_HELP '?'
+#define CMD_MENU_ITEM_1 "1"
+#define CMD_MENU_ITEM_2 "2"
+#define CMD_MENU_ITEM_3 "3"
+#define CMD_MENU_ITEM_4 "4"
+#define CMD_MENU_ITEM_5 "5"
+#define CMD_BREAK "н"
+#define CMD_EXIT "в"
+#define CMD_HELP "?"
 
 
 
