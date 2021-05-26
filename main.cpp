@@ -1,37 +1,18 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+#include <filesystem>
+#include <unistd.h>
 #include "constants.h"
 #include "dbms.h"
 #include "interface.h"
 
-using namespace std;
+#include <iostream>
+#include <string>
+#include <filesystem>
+#include <unistd.h>
 
-void DBMS_test(DBMS *db)
-{
-    rowData tdata;
-    rowData toget;
-    vector<rowData *> res;
-
-    tdata.tableID = 1;
-    tdata.ints.push_back(0);
-    tdata.ints.push_back(4);
-    tdata.ints.push_back(1000020);
-
-    tdata.strings.push_back("va");
-    tdata.strings.push_back("10.03.1998");
-    tdata.strings.push_back("good guy");
-
-    toget.tableID = 1;
-    toget.strings.push_back("va");
-
-    //db->ADD(tdata);
-    //res = db->GET(toget);
-
-    db->REMOVE(toget);
-
-    cout << res.size() << "\n";
-}
+using std::filesystem::current_path;
 
 int main()
 {
@@ -41,9 +22,10 @@ int main()
     cin.sync_with_stdio(false);
 
     Interface interface;
-    
-    struct BaseData initDb = interface.getInitData();
-    DBMS db(initDb.path, initDb.isInit);
+    string path = current_path();
+    path += "/DataBase";
+    //struct BaseData initDb = interface.getInitData();
+    DBMS db(path, 1);
     
 
     //DBMS db("/media/user/DATA/projects/mny210521/bb", 1);

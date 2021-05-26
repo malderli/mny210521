@@ -232,7 +232,7 @@ void Interface::_select(short curr)
 
 void Interface::_analitic(short curr)
 {
-    string fields[7] {"Процент постоянных клиентов", "id сделки: ", "цвет машины", "Имена и телефоны клиентов", "\nвведите нижнюю границу (целое число): ", "\nвведите сначала нижнюю границу (целое число): ", "\nвведите верхнюю границу (целое число): "};
+    string fields[7] {"Процент постоянных клиентов", "введите id сделки: ", "введите цвет машины: ", "Имена и телефоны клиентов", "\nвведите нижнюю границу (целое число): ", "\nвведите сначала нижнюю границу (целое число): ", "\nвведите верхнюю границу (целое число): "};
     struct rowData req;
 
     DEBUGER("ANALITIC in func", "")
@@ -298,10 +298,16 @@ void Interface::_analitic(short curr)
         else
         {
             short outMask = 0xFF;
-            vector<rowData *> result = db->GET(req, mask);
             
             if (curr == 6)
                 outMask = 0x18;
+            else
+            {
+                req.strings.push_back(_getString(fields[curr - 3]));
+            }
+
+            vector<rowData *> result = db->GET(req, mask);
+            
 
             _showData(result, outMask);
             return;
@@ -323,8 +329,8 @@ void Interface::_analitic(short curr)
             {
                 reqCar.ints.push_back(result[0]->ints[1]);
                 mask = 0x80;
-                result = db->GET(req);
-                _showData(result);
+                vector<rowData *> resultNext = db->GET(reqCar, mask);
+                _showData(resultNext);
             }
             else
             {
