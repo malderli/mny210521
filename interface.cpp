@@ -12,18 +12,19 @@ struct BaseData Interface::getInitData()
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    cout << "Hello, let's start\nDo you already have data base(y/N): ";
-    char baseExist = std::cin.get();
+    cout << "Здравствуйте\nу вас уже есть база данных(д/Н): ";
+    //char baseExist = std::cin.get();
+    string baseExist = _getString("");
     DEBUGER("test", baseExist)
 
     struct BaseData outData;
-    outData.isInit = ((baseExist == 'Y') || (baseExist == 'y')) ? true : false;
-    DEBUGER("is init: ", outData.isInit)
+    outData.isInit = ((baseExist == "Д") || (baseExist == "д")) ? true : false;
+    DEBUGER("уже есть база данных: ", outData.isInit)
     
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    cout << "Type data base directory: ";
+    cout << "Введите путь к базе данных: ";
     cin >> outData.path;
     return outData;
 }
@@ -44,11 +45,13 @@ void Interface::runDataBase()
 
     vector<char> cmds = { CMD_EXIT, CMD_HELP, CMD_BREAK, CMD_MENU_ITEM_1, CMD_MENU_ITEM_2, CMD_MENU_ITEM_3, CMD_MENU_ITEM_4, CMD_MENU_ITEM_5 };
     
-    string menuComand = "\nCHOOSE COMAND\n - " + std::string(1, cmds[3]) + 
-                                        " Select\n - " + cmds[4] + 
-                                        " Insert/Update\n - " + cmds[5] + 
-                                        " Delete\n - " + cmds[0] + " Save & Exit\n - " + 
-                                        cmds[1] + " Help\nInput comand: ";
+    string menuComand = "\nВыбор команды\n - "
+                        + std::string(1, cmds[3]) + " " + cmdTypes[0] + "\n - " 
+                        + cmds[4] + " " + cmdTypes[1] + "\n - "
+                        + cmds[5] + " " + cmdTypes[2] + "\n - "
+                        + cmds[6] + " " + cmdTypes[3] + "\n - "
+                        + cmds[0] + " Сохранить & Закрыть\n - "
+                        + cmds[1] + " Справка\nВведите команду: ";
     std::string menuTable;
 
     do
@@ -75,23 +78,26 @@ void Interface::runDataBase()
             menuTable += cmdTypes[cmdType - 3];
             if (cmdType == 6)
             {
-                menuTable += "> CHOOSE TABLE\n - " + 
+                menuTable += ">\n - " + 
                                         std::string(1, cmds[3]) + " Процент постоянных клиентов\n - "
                                         + cmds[4] + " Cделка по id и информации об авто\n - "  
                                         + cmds[5] + " Выдать все машины красного цвета\n - " 
                                         + cmds[6] + " Выдать список имен и телефонов всех клиентов\n - "
                                         + cmds[7] + " Количество клиентов со скидкой\n - " 
-                                        + cmds[2] + " Break to First menu\n - " 
-                                        + cmds[0] + " Save & Exit\n - " 
-                                        + cmds[1] + " Help\nInput comand: ";
+                                        + cmds[2] + " Вернуться в основное меню\n - " 
+                                        + cmds[0] + " Сохранить & Закрыть\n - " 
+                                        + cmds[1] + " Справка\nВведите команду: ";
             }
             else
             {
-                menuTable += "> CHOOSE TABLE\n - " + std::string(1, cmds[3]) +
-                                        " Car\n - " + cmds[4] + " Manager\n - " + cmds[5] + 
-                                        " Deal\n - " + cmds[6] + " Client\n - " + cmds[2] +
-                                        " Break to First menu\n - " + cmds[0] + " Save & Exit\n - " + cmds[1] +
-                                        " Help\nInput comand: ";
+                menuTable += "> Выбор таблицы\n - "
+                                + std::string(1, cmds[3]) + " Машины\n - "
+                                + cmds[4] + " Менеджеры\n - "
+                                + cmds[5] + " Сделки\n - "
+                                + cmds[6] + " Клиенты\n - "
+                                + cmds[2] + " Вернуться в основное меню\n - "
+                                + cmds[0] + " Сохранить & Закрыть\n - "
+                                + cmds[1] + " Справка\nВведите команду: ";
             }
             
             cmdCertain = _menu(menuTable, cmds);
@@ -118,7 +124,7 @@ void Interface::runDataBase()
             break;
 
         case 6:
-            _remove(cmdCertain);
+            _analitic(cmdCertain);
             break;
 
         default:
@@ -175,10 +181,10 @@ int Interface::_menu(string text, vector<char> cmds)
 void Interface::_select(short curr)
 {
     string fields[4];
-    fields[TABLE_CARS] = "car model";
-    fields[TABLE_MANAGERS] = "name of manager";
-    fields[TABLE_SALES] = "input id of sale (integer): ";
-    fields[TABLE_CLIENTS] = "name of client";
+    fields[TABLE_CARS] = "модель машины";
+    fields[TABLE_MANAGERS] = "ФИО менеджера";
+    fields[TABLE_SALES] = "Введите id продажи (целое): ";
+    fields[TABLE_CLIENTS] = "ФИО клиента";
     struct rowData req;
 
     DEBUGER("SELECT COMAND in func", "")
@@ -202,7 +208,7 @@ void Interface::_select(short curr)
         break;
 
     default:
-        cout << "<! invalid argument !>\n";
+        cout << "<! неверный аргумент !>\n";
         return;
     }
 
@@ -221,68 +227,12 @@ void Interface::_select(short curr)
     }
 
     vector<rowData *> result = db->GET(req);
-    if (result.size() == 0)
-    {
-        cout << "\nNo such data in base\n";
-    }
-
-    for (rowData *oneBlock : result)
-    {
-        int padding = 17;
-        int paddNext = 15;
-        cout << "_________block data__________\n\n";
-
-        switch (oneBlock->tableID)
-        {
-        case TABLE_CARS:
-            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
-            cout << std::setw(padding) << "MODEL: " << "<" << oneBlock->strings[0] << ">\n";
-            cout << std::setw(padding) << "YEAR: " << "<" << oneBlock->strings[1] << ">\n";
-            cout << std::setw(padding) << "COLOR: " << "<" << oneBlock->strings[2] << ">\n";
-            cout << std::setw(padding) << "TECH CHAR: " << "<" << oneBlock->strings[3] << ">\n";
-            cout << std::setw(padding) << "EQUIPMENT: " << "<" << oneBlock->strings[4] << ">\n";
-            cout << std::setw(padding) << "PRICE: " << "<" << oneBlock->strings[5] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[6] << ">\n";
-            break;
-
-        case TABLE_MANAGERS:
-            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
-            cout << std::setw(padding) << "SUM of DEALS: " << "<" << oneBlock->ints[1] << ">\n";
-            cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << ">\n";
-            cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">\n";
-            cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">\n";
-            break;
-
-        case TABLE_SALES:
-            cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
-            cout << std::setw(padding) << "CAR ID: " << "<" << oneBlock->ints[1] << ">\n";
-            cout << std::setw(padding) << "SALE DATE: " << "<" << oneBlock->strings[0] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[1] << ">\n";
-            break;
-
-        case TABLE_CLIENTS:
-            cout << std::setw(padding) << "ID: " << "<"  << oneBlock->ints[0] << ">\n";
-            cout << std::setw(padding) << "STATUS: " << "<"  << oneBlock->ints[1] << ">\n";
-            cout << std::setw(padding) << "DISCOUNT: " << "<"  << oneBlock->ints[2] << ">\n";
-            cout << std::setw(padding) << "NAME: " << "<"  << oneBlock->strings[0] << ">\n";
-            cout << std::setw(padding) << "PHONE: " << "<"  << oneBlock->strings[1] << ">\n";
-            cout << std::setw(padding) << "BIRTHDATE: " << "<"  << oneBlock->strings[2] << ">\n";
-            cout << std::setw(padding) << "PASSPORT DATA: " << "<"  << oneBlock->strings[3] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<"  << oneBlock->strings[4] << ">\n";
-            break;
-
-        default:
-            cout << "error in BASE\n";
-            break;
-        }
-    }
-    cout << "_______________________\n";
+    _showData(result);
 }
 
 void Interface::_analitic(short curr)
 {
-    string fields[7] {"Процент постоянных клиентов", "id сделки", "цвет машины", "Имена и телефоны клиентов", "\nвведите нижнюю границу (целое число): ", "\nвведите сначала нижнюю границу (целое число): ", "\nвведите верхнюю границу (целое число): "};
+    string fields[7] {"Процент постоянных клиентов", "id сделки: ", "цвет машины", "Имена и телефоны клиентов", "\nвведите нижнюю границу (целое число): ", "\nвведите сначала нижнюю границу (целое число): ", "\nвведите верхнюю границу (целое число): "};
     struct rowData req;
 
     DEBUGER("ANALITIC in func", "")
@@ -316,7 +266,7 @@ void Interface::_analitic(short curr)
         break;
 
     default:
-        cout << "<! invalid argument !>\n";
+        cout << "<! неверный аргумент !>\n";
         return;
     }
 
@@ -324,15 +274,16 @@ void Interface::_analitic(short curr)
     {   //if 3
         if (curr == 3)
         {
-            if (std::cin.rdbuf()->in_avail() > 0)
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            
-            cout << "введите " << fields[curr - 3] << " для поиска: ";
-            string str = _getString("");
-            req.strings.push_back(str);
             vector<rowData *> result = db->GET(req, mask);
 
             int usualCount = 0;
+            
+            if (result.size() == 0)
+            {
+                cout << "\nКлиентов Нет\n";
+                return;
+            }
+            
             for (rowData *oneBlock : result)
             {
                 if (oneBlock->ints[1] == 1)
@@ -368,23 +319,32 @@ void Interface::_analitic(short curr)
             _showData(result);
             struct rowData reqCar;
             reqCar.tableID = TABLE_CARS;
-            reqCar.ints.push_back(result[0]->ints[1]);
-            mask = 0x80;
-            result = db->GET(req);
-            _showData(result);
+            if (result.size() > 0)
+            {
+                reqCar.ints.push_back(result[0]->ints[1]);
+                mask = 0x80;
+                result = db->GET(req);
+                _showData(result);
+            }
+            else
+            {
+                cout << "такой машины нет\n";
+            }
+            return;
+            
         }
         else
         {
             vector<char> cmds = {CMD_MENU_ITEM_1, CMD_MENU_ITEM_2, CMD_MENU_ITEM_3};
-            string text = "/n - " + std::string(1, cmds[0]) + " Клиенты с скидкой меньше чем _\n - "
+            string text = "\n - " + std::string(1, cmds[0]) + " Клиенты с скидкой меньше чем _\n - "
                                         + cmds[1] + " Клиенты с скидкой меньше чем _ и больше чем _\n - "  
                                         + cmds[2] + " Клиенты с скидкой больше чем _\nВвод: ";
             
             vector<rowData *> result = db->GET(req, mask);
             vector<rowData *> final;
-            int option = _menu("", cmds);
+            int option = _menu(text, cmds);
 
-            int target = _getNumber(fields[curr + option]);
+            int target = _getNumber(fields[curr + option - 3]);
             int targetNext = 0;
             switch (option)
             {
@@ -438,7 +398,7 @@ void Interface::_showData(vector<rowData *> result)
             cout << std::setw(padding) << "TECH CHAR: " << "<" << oneBlock->strings[3] << ">\n";
             cout << std::setw(padding) << "EQUIPMENT: " << "<" << oneBlock->strings[4] << ">\n";
             cout << std::setw(padding) << "PRICE: " << "<" << oneBlock->strings[5] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[6] << ">\n";
+            cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[6] << ">\n";
             break;
 
         case TABLE_MANAGERS:
@@ -447,14 +407,14 @@ void Interface::_showData(vector<rowData *> result)
             cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << ">\n";
             cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">\n";
             cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">\n";
+            cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[2] << ">\n";
             break;
 
         case TABLE_SALES:
             cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
             cout << std::setw(padding) << "CAR ID: " << "<" << oneBlock->ints[1] << ">\n";
             cout << std::setw(padding) << "SALE DATE: " << "<" << oneBlock->strings[0] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[1] << ">\n";
+            cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[1] << ">\n";
             break;
 
         case TABLE_CLIENTS:
@@ -465,7 +425,7 @@ void Interface::_showData(vector<rowData *> result)
             cout << std::setw(padding) << "PHONE: " << "<"  << oneBlock->strings[1] << ">\n";
             cout << std::setw(padding) << "BIRTHDATE: " << "<"  << oneBlock->strings[2] << ">\n";
             cout << std::setw(padding) << "PASSPORT DATA: " << "<"  << oneBlock->strings[3] << ">\n";
-            cout << std::setw(padding) << "COMMENT: " << "<"  << oneBlock->strings[4] << ">\n";
+            cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<"  << oneBlock->strings[4] << ">\n";
             break;
 
         default:
@@ -481,7 +441,7 @@ void Interface::_showData(vector<rowData *> result, short mask)
 {
     if (result.size() == 0)
     {
-        cout << "\nNo such data in base\n";
+        cout << "\nВ таблице нет совпадений\n";
         return;
     }
 
@@ -489,7 +449,7 @@ void Interface::_showData(vector<rowData *> result, short mask)
     {
         int padding = 17;
         int paddNext = 15;
-        cout << "_________block data__________\n\n";
+        cout << "_________блок данных__________\n\n";
 
         switch (oneBlock->tableID)
         {
@@ -497,68 +457,68 @@ void Interface::_showData(vector<rowData *> result, short mask)
             if (mask & 0x80 > 0)
                 cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
             if (mask & 0x40 > 0)
-                cout << std::setw(padding) << "MODEL: " << "<" << oneBlock->strings[0] << ">\n";
+                cout << std::setw(padding) << "МОДЕЛЬ: " << "<" << oneBlock->strings[0] << ">\n";
             if (mask & 0x20 > 0)
-                cout << std::setw(padding) << "YEAR: " << "<" << oneBlock->strings[1] << ">\n";
+                cout << std::setw(padding) << "ГОД: " << "<" << oneBlock->strings[1] << ">\n";
             if (mask & 0x10 > 0)
-                cout << std::setw(padding) << "COLOR: " << "<" << oneBlock->strings[2] << ">\n";
+                cout << std::setw(padding) << "ЦВЕТ: " << "<" << oneBlock->strings[2] << ">\n";
             if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "TECH CHAR: " << "<" << oneBlock->strings[3] << ">\n";
+                cout << std::setw(padding) << "ХАРАКТЕРИСТИКИ: " << "<" << oneBlock->strings[3] << ">\n";
             if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "EQUIPMENT: " << "<" << oneBlock->strings[4] << ">\n";
+                cout << std::setw(padding) << "ВАРИАНТЫ КОМПЛЕКТАЦИИ: " << "<" << oneBlock->strings[4] << ">\n";
             if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "PRICE: " << "<" << oneBlock->strings[5] << ">\n";
+                cout << std::setw(padding) << "ЦЕНА с ВАРИАНТАМИ КОМПЛЕКТАЦИИ: " << "<" << oneBlock->strings[5] << ">\n";
             if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[6] << ">\n";
+                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[6] << ">\n";
             break;
 
         case TABLE_MANAGERS:
             if (mask & 0x20 > 0)
                 cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
             if (mask & 0x10 > 0)
-                cout << std::setw(padding) << "SUM of DEALS: " << "<" << oneBlock->ints[1] << ">\n";
+                cout << std::setw(padding) << "КОЛИЧЕСТВО СДЕЛОК: " << "<" << oneBlock->ints[1] << ">\n";
             if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "total erned money: " << "<" << oneBlock->ints[2] << ">\n";
+                cout << std::setw(padding) << "ОБЩИЙ ДОХОД: " << "<" << oneBlock->ints[2] << ">\n";
             if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "Name: " << "<" << oneBlock->strings[0] << ">\n";
+                cout << std::setw(padding) << "ФИО: " << "<" << oneBlock->strings[0] << ">\n";
             if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "BIRTHDATE: " << "<" << oneBlock->strings[1] << ">\n";
+                cout << std::setw(padding) << "ГОД РОЖДЕНИЯ: " << "<" << oneBlock->strings[1] << ">\n";
             if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[2] << ">\n";
+                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[2] << ">\n";
             break;
 
         case TABLE_SALES:
             if (mask & 0x08 > 0)
                 cout << std::setw(padding) << "ID: " << "<" << oneBlock->ints[0] << ">\n";
             if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "CAR ID: " << "<" << oneBlock->ints[1] << ">\n";
+                cout << std::setw(padding) << "ID МАШИНЫ: " << "<" << oneBlock->ints[1] << ">\n";
             if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "SALE DATE: " << "<" << oneBlock->strings[0] << ">\n";
+                cout << std::setw(padding) << "ДАТА ПРОДАЖИ: " << "<" << oneBlock->strings[0] << ">\n";
             if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "COMMENT: " << "<" << oneBlock->strings[1] << ">\n";
+                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<" << oneBlock->strings[1] << ">\n";
             break;
 
         case TABLE_CLIENTS:
             if (mask & 0x80 > 0)
                 cout << std::setw(padding) << "ID: " << "<"  << oneBlock->ints[0] << ">\n";
             if (mask & 0x40 > 0)
-                cout << std::setw(padding) << "STATUS: " << "<"  << oneBlock->ints[1] << ">\n";
+                cout << std::setw(padding) << "СТАТУС ПОСТОЯННОСТИ: " << "<"  << oneBlock->ints[1] << ">\n";
             if (mask & 0x20 > 0)
-                cout << std::setw(padding) << "DISCOUNT: " << "<"  << oneBlock->ints[2] << ">\n";
+                cout << std::setw(padding) << "ПРОЦЕНТ СКИДКИ: " << "<"  << oneBlock->ints[2] << ">\n";
             if (mask & 0x10 > 0)
-                cout << std::setw(padding) << "NAME: " << "<"  << oneBlock->strings[0] << ">\n";
+                cout << std::setw(padding) << "ФИО: " << "<"  << oneBlock->strings[0] << ">\n";
             if (mask & 0x08 > 0)
-                cout << std::setw(padding) << "PHONE: " << "<"  << oneBlock->strings[1] << ">\n";
+                cout << std::setw(padding) << "ТЕЛЕФОН: " << "<"  << oneBlock->strings[1] << ">\n";
             if (mask & 0x04 > 0)
-                cout << std::setw(padding) << "BIRTHDATE: " << "<"  << oneBlock->strings[2] << ">\n";
+                cout << std::setw(padding) << "ГОД РОЖДЕНИЯ: " << "<"  << oneBlock->strings[2] << ">\n";
             if (mask & 0x02 > 0)
-                cout << std::setw(padding) << "PASSPORT DATA: " << "<"  << oneBlock->strings[3] << ">\n";
+                cout << std::setw(padding) << "ПАСПОРТНЫЕ ДАННЫЕ: " << "<"  << oneBlock->strings[3] << ">\n";
             if (mask & 0x01 > 0)
-                cout << std::setw(padding) << "COMMENT: " << "<"  << oneBlock->strings[4] << ">\n";
+                cout << std::setw(padding) << "КОММЕНТАРИЙ: " << "<"  << oneBlock->strings[4] << ">\n";
             break;
 
         default:
-            cout << "error in BASE\n";
+            cout << "ошибка в базе\n";
             break;
         }
     }
@@ -597,48 +557,48 @@ void Interface::_insert(short curr)
     {
         case 3: //model
             req.tableID = TABLE_CARS;
-            req.ints.push_back(_getNumber("set id(int): "));
-            req.strings.push_back(_getString("set model: "));
-            req.strings.push_back(_getString("set year: "));
-            req.strings.push_back(_getString("set color: "));
-            req.strings.push_back(_getString("set technician characteristics: "));
-            req.strings.push_back(_getString("set equipment: "));
-            req.strings.push_back(_getString("set price(int): "));
-            req.strings.push_back(_getString("add your comment: "));
+            req.ints.push_back(_getNumber("введите id (целое): "));
+            req.strings.push_back(_getString("введите модель: "));
+            req.strings.push_back(_getString("введите год: "));
+            req.strings.push_back(_getString("введите цвет: "));
+            req.strings.push_back(_getString("введите характеристики: "));
+            req.strings.push_back(_getString("введите комплектации: "));
+            req.strings.push_back(_getString("введите цену относительно комплектаций: "));
+            req.strings.push_back(_getString("введите комментарий: "));
             break;
 
         case 4: //manager
             req.tableID = TABLE_MANAGERS;
-            req.ints.push_back(_getNumber("set id(int): "));
-            req.ints.push_back(_getNumber("set sum of deals(int): "));
-            req.ints.push_back(_getNumber("set total erned money(int): "));
-            req.strings.push_back(_getString("set name of manager: "));
-            req.strings.push_back(_getString("set birthdate: "));
-            req.strings.push_back(_getString("add your comment: "));
+            req.ints.push_back(_getNumber("введите id (целое): "));
+            req.ints.push_back(_getNumber("введите количество сделок (целое): "));
+            req.ints.push_back(_getNumber("введите общая сумма дохода от сделок (целое): "));
+            req.strings.push_back(_getString("введите ФИО менеджера: "));
+            req.strings.push_back(_getString("введите дату рождения: "));
+            req.strings.push_back(_getString("введите комментарий: "));
             break;
 
         case 5: //deal
             req.tableID = TABLE_SALES;
-            req.ints.push_back(_getNumber("set id(int): "));
-            req.ints.push_back(_getNumber("set scar id(int): "));
-            req.strings.push_back(_getString("set sold date: "));
-            req.strings.push_back(_getString("add your comment: "));
+            req.ints.push_back(_getNumber("введите id (целое): "));
+            req.ints.push_back(_getNumber("введите id машины (целое): "));
+            req.strings.push_back(_getString("введите дату продажи: "));
+            req.strings.push_back(_getString("введите комментарий: "));
             break;
 
         case 6: //client
             req.tableID = TABLE_CLIENTS;
-            req.ints.push_back(_getNumber("set id(int): "));
-            req.ints.push_back(_getNumber("set status of usual(int): "));
-            req.ints.push_back(_getNumber("set discount precentage(int): "));
-            req.strings.push_back(_getString("set name of buyer: "));
-            req.strings.push_back(_getString("set phone number (like: 89349214543): "));
-            req.strings.push_back(_getString("set birthdate: "));
-            req.strings.push_back(_getString("set pasport data: "));
-            req.strings.push_back(_getString("add your comment: "));
+            req.ints.push_back(_getNumber("введите id (целое): "));
+            req.ints.push_back(_getNumber("введите статус постоянности (целое): "));
+            req.ints.push_back(_getNumber("введите процент скидки (целое): "));
+            req.strings.push_back(_getString("введите ФИО покупателья: "));
+            req.strings.push_back(_getString("введите номер телефона (пример: 89349214543): "));
+            req.strings.push_back(_getString("введите дату рождения: "));
+            req.strings.push_back(_getString("введите папортные данные: "));
+            req.strings.push_back(_getString("введите комментарий: "));
             break;
 
         default:
-            cout << "! invalid argument !\n";
+            cout << "! неверный аргумент !\n";
             return;
     }
     
@@ -652,10 +612,10 @@ void Interface::_remove(short curr)
     DEBUGER("select REMOVE !!!!!!!!!!", "")
 
     string fields[4];
-    fields[TABLE_CARS] = "car model";
-    fields[TABLE_MANAGERS] = "name of manager";
-    fields[TABLE_SALES] = "input id of sale (integer): ";
-    fields[TABLE_CLIENTS] = "name of client";
+    fields[TABLE_CARS] = "модель машины";
+    fields[TABLE_MANAGERS] = "ФИО менеджера";
+    fields[TABLE_SALES] = "Введите id продажи (целое): ";
+    fields[TABLE_CLIENTS] = "ФИО клиента";
 
     rowData req;
 
@@ -682,7 +642,7 @@ void Interface::_remove(short curr)
         break;
 
     default:
-        cout << "! invalid argument !\n";
+        cout << "! неверный аргумент !\n";
         return;
     }
 
@@ -691,7 +651,7 @@ void Interface::_remove(short curr)
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
 
-        cout << "input " << fields[req.tableID] << ": ";
+        cout << "Введите " << fields[req.tableID] << ": ";
         string str;
         cin >> str;
         req.strings.push_back(str);
@@ -702,26 +662,26 @@ void Interface::_remove(short curr)
         req.ints.push_back(data);
     }
 
-    cout << "result: " << db->REMOVE(req) << "\n";
+    cout << "Успешность удаления: " << db->REMOVE(req) << "\n";
 }
 
 void Interface::_help(vector<char> cmds)
 {
-    cout << "\n_____________help_________________\n";
-    cout << "2 sections of menu:\n";
-    cout << "First section:\n";
-    cout << "comand '" << cmds[3] << "' - SELECT\n";
-    cout << "comand '" << cmds[4] << "' - INSERT or UPDATE\n";
-    cout << "comand '" << cmds[5] << "' - DELETE\n-----------------------------\n";
-    cout << "Second section:\n";
-    cout << "comand '" << cmds[3] << "' - CAR\n";
-    cout << "comand '" << cmds[4] << "' - MANAGER\n";
-    cout << "comand '" << cmds[5] << "' - SALES\n";
-    cout << "comand '" << cmds[6] << "' - CLIENTS\n";
+    cout << "\n_____________справка_________________\n";
+    cout << "2 секции меню:\n";
+    cout << "первая секция:\n";
+    cout << "команда '" << cmds[3] << "' - ВЫБРАТЬ\n";
+    cout << "команда '" << cmds[4] << "' - ВСТАВИТЬ или ПЕРЕЗАПИСАТЬ\n";
+    cout << "команда '" << cmds[5] << "' - АНАЛИТИКА (следующее меню в даной секции аналогично устроено и имеет средства для выбора данных)\n";
+    cout << "команда '" << cmds[5] << "' - УДАЛИТЬ\n-----------------------------\n";
+    cout << "ВТОРАЯ СЕКЦИЯ - ВЫБОР ТАБЛИЦЫ:\n";
+    cout << "команда '" << cmds[3] << "' - МАШИНЫ\n";
+    cout << "команда '" << cmds[4] << "' - МЕНЕДЖЕРЫ\n";
+    cout << "команда '" << cmds[5] << "' - ПРОДАЖИ\n";
+    cout << "команда '" << cmds[6] << "' - КЛИЕНТЫ\n";
     cout << "-----------------------------------\n";
-    cout << "Common logic: first of all choice type of \ncomand (1 select, 2 insert/update, 3 delete)";
-    cout << "after that, choice \ntable (1 cars, 2 managers, 3 sales, 4 clients)\n\n";
-    cout << "to exit and save type '" << cmds[0] << "', to go to start menu type '" << cmds[2] << "', and '" << cmds[1] << "' for watch this text\n";
+    cout << "Общая логика: выбираете команду, потом таблицу \n\n";
+    cout << "для сохранения и выхода '" << cmds[0] << "', для возврата в начальное меню '" << cmds[2] << "', и '" << cmds[1] << "' для просмотра этой справки\n";
     cout << "___________________________________\n\n";
 }
 
@@ -739,13 +699,13 @@ bool Interface::_is_number(const std::string &s)
         if (flag)
             stoi(s);
         else
-            cout << "\n<<!NOT INT NUMBER!>>\n\n";
+            cout << "\n<<!НЕ INT!>>\n\n";
 
         return flag;
     }
     catch (...)
     {
-        cout << "to much... need smaler number\n";
+        cout << "слишком большое число.... надо меньше\n";
         return false;
     }
 }

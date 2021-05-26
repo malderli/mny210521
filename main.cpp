@@ -3,6 +3,7 @@
 #include <vector>
 #include "constants.h"
 #include "dbms.h"
+#include "interface.h"
 
 using namespace std;
 
@@ -22,11 +23,10 @@ void DBMS_test(DBMS *db)
     tdata.strings.push_back("good guy");
 
     toget.tableID = 1;
-    toget.ints.push_back(1);
     toget.strings.push_back("va");
 
-    db->ADD(tdata);
-    res = db->GET(toget, 0x24);
+    //db->ADD(tdata);
+    //res = db->GET(toget);
 
     db->REMOVE(toget);
 
@@ -39,9 +39,18 @@ int main()
     //SetConsoleCP(1251);
     //SetConsoleOutputCP(1251);
     cin.sync_with_stdio(false);
-    DBMS db("/media/malderli/Projects/Money/testfolder", 1);
 
-    DBMS_test(&db);
+    Interface interface;
+    
+    struct BaseData initDb = interface.getInitData();
+    DBMS db(initDb.path, initDb.isInit);
+    
 
+    //DBMS db("/media/user/DATA/projects/mny210521/bb", 1);
+
+    interface.setDb(&db);
+    interface.runDataBase();
+
+    //DBMS_test(&db);
     return 0;
 }
