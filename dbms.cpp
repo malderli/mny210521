@@ -5,13 +5,13 @@ DBMS::DBMS(string dbFolder, bool isInit)
     // DB configuration info setup
     dbTableStruct[TABLE_CARS] = 0x80;
     dbTableStruct[TABLE_MANAGERS] = 0x38;
-    dbTableStruct[TABLE_SALES] = 0x0C;
-    dbTableStruct[TABLE_CLIENTS] = 0xE0;
+    dbTableStruct[TABLE_SALES] = 0x30;
+    dbTableStruct[TABLE_CLIENTS] = 0x1E0;
 
     dbTableSize[TABLE_CARS] = 8;
     dbTableSize[TABLE_MANAGERS] = 6;
-    dbTableSize[TABLE_SALES] = 4;
-    dbTableSize[TABLE_CLIENTS] = 8;
+    dbTableSize[TABLE_SALES] = 6;
+    dbTableSize[TABLE_CLIENTS] = 9;
 
     // Readers opening
     dbPath = dbFolder;
