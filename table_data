@@ -26,6 +26,8 @@ TABLE_SALES
         ID          int
         CARID       int
         DATE        string
+        CLIENT      string
+        MANAGER     string
         COMMENT     string
 
 TABLE_CLIENTS
@@ -34,6 +36,7 @@ TABLE_CLIENTS
         ID          int
         STAT        int
         DISCOUNT    int
+        DRIVEEXP    int
         NAME        string
         PHONE       string
         BRITHDATE   string
