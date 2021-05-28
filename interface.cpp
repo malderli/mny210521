@@ -12,7 +12,7 @@ struct BaseData Interface::getInitData()
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    cout << "Здравствуйте\nхотите ввести путь к базе данных(д/Н): ";
+    /*cout << "Здравствуйте\nхотите ввести путь к базе данных(д/Н): ";
     //char baseExist = std::cin.get();
     string baseExist = _getString("");
     DEBUGER("test", baseExist)
@@ -32,7 +32,14 @@ struct BaseData Interface::getInitData()
     {
         outData.path = "";
     }
-    
+    */
+    cout << "Здравствуйте\nНажмите Enter для начала работы с Базой Данных: ";
+    //char baseExist = std::cin.get();
+    string baseExist = _getString("");
+
+    struct BaseData outData;
+    outData.isInit = false;
+    outData.path = "";
     return outData;
 }
 
