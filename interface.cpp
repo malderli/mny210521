@@ -541,6 +541,8 @@ void Interface::_insert(short curr)
             req.ints.push_back(_getNumber("введите id (целое): "));
             req.ints.push_back(_getNumber("введите id машины (целое): "));
             req.strings.push_back(_getString("введите дату продажи: "));
+            req.strings.push_back(_getString("введите ФИО клиента: "));
+            req.strings.push_back(_getString("введите ФИО менеджера: "));
             req.strings.push_back(_getString("введите комментарий: "));
             break;
 
@@ -549,6 +551,7 @@ void Interface::_insert(short curr)
             req.ints.push_back(_getNumber("введите id (целое): "));
             req.ints.push_back(_getNumber("введите статус постоянности (целое): "));
             req.ints.push_back(_getNumber("введите процент скидки (целое): "));
+            req.ints.push_back(_getNumber("введите стаж вождения (целое): "));
             req.strings.push_back(_getString("введите ФИО покупателья: "));
             req.strings.push_back(_getString("введите номер телефона (пример: 89349214543): "));
             req.strings.push_back(_getString("введите дату рождения: "));
