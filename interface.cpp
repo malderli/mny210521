@@ -1,5 +1,5 @@
 #include "interface.h"
-//#define DEBUGER(str, data) cout << "\n<<" << str << "|" << data << ">>\n";
+//#define DEBUGER(str, data) std::wcout <<L "\n<<L" <<L str <<L "|" <<L data <<L ">>\n";
 #define DEBUGER(str, data)
 
 Interface::Interface()
@@ -12,7 +12,7 @@ struct BaseData Interface::getInitData()
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    cout << "Здравствуйте\nхотите ввести путь к базе данных(д/Н): ";
+    std::wcout <<L "Здравствуйте\nхотите ввести путь к базе данных(д/Н): ";
     //char baseExist = std::cin.get();
     string baseExist = _getString("");
     DEBUGER("test", baseExist)
@@ -25,7 +25,7 @@ struct BaseData Interface::getInitData()
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-        cout << "Введите путь к базе данных: ";
+        std::wcout <<L "Введите путь к базе данных: ";
         cin >> outData.path;
     }
     else
@@ -67,7 +67,7 @@ void Interface::runDataBase()
 
         if (cmdType == 2)
         {
-                cout << "Уже в главном меню\n";
+                std::wcout <<L "Уже в главном меню\n";
                 continue;
         }
 
@@ -111,7 +111,7 @@ void Interface::runDataBase()
 
             if (cmdCertain == 2)
                 {
-                    cout << "Переход в основное меню...\n";
+                    std::wcout <<L "Переход в основное меню...\n";
                     continue;
                 }
         }
@@ -143,7 +143,7 @@ void Interface::runDataBase()
             if (std::cin.rdbuf()->in_avail() > 0)
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            cout << "Вы уверены, что хотите выйти?\nВедите 'н' для отмены или любую другую клавишу для подтверждения: ";
+            std::wcout <<L "Вы уверены, что хотите выйти?\nВедите 'н' для отмены или любую другую клавишу для подтверждения: ";
             std::string commit = _getString("");
             cmdType = ((commit == "н") || (commit == "Н") /*|| (comand == '\320')*/) ? -1 : 0;
         }
@@ -155,7 +155,7 @@ int Interface::_menu(string text, vector<string> cmds)
     string input = "";
     do
     {
-        cout << text;
+        std::wcout <<L text;
         // if (std::cin.rdbuf()->in_avail() > 0)
         //         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         
@@ -176,7 +176,7 @@ int Interface::_menu(string text, vector<string> cmds)
         }
         else
         {
-            cout << "что-то странное ввели\n";
+            std::wcout <<L "что-то странное ввели\n";
             continue;
         }
         
@@ -215,7 +215,7 @@ void Interface::_select(short curr)
         break;
 
     default:
-        cout << "<! неверный аргумент !>\n";
+        std::wcout <<L "<! неверный аргумент !>\n";
         return;
     }
 
@@ -223,7 +223,7 @@ void Interface::_select(short curr)
     {
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        cout << "введите " << fields[req.tableID] << " для поиска: ";
+        std::wcout <<L "введите " <<L fields[req.tableID] <<L " для поиска: ";
         string str = _getString("");
         req.strings.push_back(str);
     }
@@ -273,7 +273,7 @@ void Interface::_analitic(short curr)
         break;
 
     default:
-        cout << "<! неверный аргумент !>\n";
+        std::wcout <<L "<! неверный аргумент !>\n";
         return;
     }
 
@@ -287,7 +287,7 @@ void Interface::_analitic(short curr)
             
             if (result.size() == 0)
             {
-                cout << "\nКлиентов Нет\n";
+                std::wcout <<L "\nКлиентов Нет\n";
                 return;
             }
             
@@ -296,10 +296,10 @@ void Interface::_analitic(short curr)
                 if (oneBlock->ints[1] == 1)
                     usualCount++;
             }
-            cout << "_________________________________\n";
-            cout << "Процент постоянных клиентов: " << 100 * ((double)usualCount / result.size()) 
-                << "\nПостоянных: " << usualCount << " всего: " << result.size() << "\n";
-            cout << "_________________________________\n"; 
+            std::wcout <<L "_________________________________\n";
+            std::wcout <<L "Процент постоянных клиентов: " <<L 100 * ((double)usualCount / result.size()) 
+                <<L "\nПостоянных: " <<L usualCount <<L " всего: " <<L result.size() <<L "\n";
+            std::wcout <<L "_________________________________\n"; 
 
             return;
         }
@@ -329,7 +329,7 @@ void Interface::_analitic(short curr)
         {
             int data = _getNumber(fields[curr - 3]);
             req.ints.push_back(data);
-            cout << "\nИнформация о сделке:";
+            std::wcout <<L "\nИнформация о сделке:";
             vector<rowData *> result = db->GET(req);
             _showData(result);
             struct rowData reqCar;
@@ -339,12 +339,12 @@ void Interface::_analitic(short curr)
                 reqCar.ints.push_back(result[0]->ints[1]);
                 mask = 0x80;
                 vector<rowData *> resultNext = db->GET(reqCar, mask);
-                cout << "\nИнформация о машине:";
+                std::wcout <<L "\nИнформация о машине:";
                 _showData(resultNext);
             }
             else
             {
-                cout << "такой машины нет\n";
+                std::wcout <<L "такой машины нет\n";
             }
             return;
             
@@ -366,19 +366,19 @@ void Interface::_analitic(short curr)
             {
             case 0:
                 final = _showPrecentage(result, target,true);
-                cout << "Клиенты с скидкой меньше чем " << target << "\n";
+                std::wcout <<L "Клиенты с скидкой меньше чем " <<L target <<L "\n";
                 break;
             
             case 1:
                 result = _showPrecentage(result, target,true);
                 targetNext =  _getNumber("\nТеперь нижняя граница скидки (целое число): ");
                 final = _showPrecentage(result, targetNext,false);
-                cout << "Клиенты с скидкой меньше чем " << target << " и больше чем " << targetNext << "\n";
+                std::wcout <<L "Клиенты с скидкой меньше чем " <<L target <<L " и больше чем " <<L targetNext <<L "\n";
                 break;
             
             case 2:
                 final = _showPrecentage(result, target,false);
-                cout << "Клиенты с скидкой больше чем " << target << "\n";
+                std::wcout <<L "Клиенты с скидкой больше чем " <<L target <<L "\n";
                 break;
             }
             _showData(final);
@@ -394,7 +394,7 @@ void Interface::_showData(vector<rowData *> result, short mask)
 {  
     if (result.size() == 0)
     {
-        cout << "\nВ таблице нет совпадений\n";
+        std::wcout <<L "\nВ таблице нет совпадений\n";
         return;
     }
 
@@ -402,86 +402,86 @@ void Interface::_showData(vector<rowData *> result, short mask)
     {
         int padding = 17;
         int paddNext = 15;
-        cout << "\n__________ БЛОК ДАННЫХ __________\n\n";
+        std::wcout <<L "\n__________ БЛОК ДАННЫХ __________\n\n";
 
         switch (oneBlock->tableID)
         {
         case TABLE_CARS:
             if ( (mask & 0x80) > 0)
-                cout << "ID:                             " << "<" << oneBlock->ints[0] << ">\n";
+                std::wcout <<L "ID:                             " <<L "<" <<L oneBlock->ints[0] <<L ">\n";
             if ( (mask & 0x40) > 0)
-                cout << "МОДЕЛЬ:                         " << "<" << oneBlock->strings[0] << ">\n";
+                std::wcout <<L "МОДЕЛЬ:                         " <<L "<" <<L oneBlock->strings[0] <<L ">\n";
             if ( (mask & 0x20) > 0)
-                cout << "ГОД:                            " << "<" << oneBlock->strings[1] << ">\n";
+                std::wcout <<L "ГОД:                            " <<L "<" <<L oneBlock->strings[1] <<L ">\n";
             if ( (mask & 0x10) > 0)
-                cout << "ЦВЕТ:                           " << "<" << oneBlock->strings[2] << ">\n";
+                std::wcout <<L "ЦВЕТ:                           " <<L "<" <<L oneBlock->strings[2] <<L ">\n";
             if ( (mask & 0x08) > 0)
-                cout << "ХАРАКТЕРИСТИКИ:                 " << "<" << oneBlock->strings[3] << ">\n";
+                std::wcout <<L "ХАРАКТЕРИСТИКИ:                 " <<L "<" <<L oneBlock->strings[3] <<L ">\n";
             if ( (mask & 0x04) > 0)
-                cout << "ВАРИАНТЫ КОМПЛЕКТАЦИИ:          " << "<" << oneBlock->strings[4] << ">\n";
+                std::wcout <<L "ВАРИАНТЫ КОМПЛЕКТАЦИИ:          " <<L "<" <<L oneBlock->strings[4] <<L ">\n";
             if ( (mask & 0x02) > 0)
-                cout << "ЦЕНА с ВАРИАНТАМИ КОМПЛЕКТАЦИИ: " << "<" << oneBlock->strings[5] << ">\n";
+                std::wcout <<L "ЦЕНА с ВАРИАНТАМИ КОМПЛЕКТАЦИИ: " <<L "<" <<L oneBlock->strings[5] <<L ">\n";
             if ( (mask & 0x01) > 0)
-                cout << "КОММЕНТАРИЙ:                    " << "<" << oneBlock->strings[6] << ">\n";
+                std::wcout <<L "КОММЕНТАРИЙ:                    " <<L "<" <<L oneBlock->strings[6] <<L ">\n";
             break;
 
         case TABLE_MANAGERS:
             if ( (mask & 0x20) > 0)
-                cout << "ID:                " << "<" << oneBlock->ints[0] << ">\n";
+                std::wcout <<L "ID:                " <<L "<" <<L oneBlock->ints[0] <<L ">\n";
             if ( (mask & 0x10) > 0)
-                cout << "КОЛИЧЕСТВО СДЕЛОК: " << "<" << oneBlock->ints[1] << ">\n";
+                std::wcout <<L "КОЛИЧЕСТВО СДЕЛОК: " <<L "<" <<L oneBlock->ints[1] <<L ">\n";
             if ( (mask & 0x08) > 0)
-                cout << "ОБЩИЙ ДОХОД:       " << "<" << oneBlock->ints[2] << ">\n";
+                std::wcout <<L "ОБЩИЙ ДОХОД:       " <<L "<" <<L oneBlock->ints[2] <<L ">\n";
             if ( (mask & 0x04) > 0)
-                cout << "ФИО:               " << "<" << oneBlock->strings[0] << ">\n";
+                std::wcout <<L "ФИО:               " <<L "<" <<L oneBlock->strings[0] <<L ">\n";
             if ( (mask & 0x02) > 0)
-                cout << "ГОД РОЖДЕНИЯ:      " << "<" << oneBlock->strings[1] << ">\n";
+                std::wcout <<L "ГОД РОЖДЕНИЯ:      " <<L "<" <<L oneBlock->strings[1] <<L ">\n";
             if ( (mask & 0x01) > 0)
-                cout << "КОММЕНТАРИЙ:       " << "<" << oneBlock->strings[2] << ">\n";
+                std::wcout <<L "КОММЕНТАРИЙ:       " <<L "<" <<L oneBlock->strings[2] <<L ">\n";
             break;
 
         case TABLE_SALES:
             if ( (mask & 0x20) > 0)
-                cout << "ID:             " << "<" << oneBlock->ints[0] << ">\n";
+                std::wcout <<L "ID:             " <<L "<" <<L oneBlock->ints[0] <<L ">\n";
             if ( (mask & 0x10) > 0)
-                cout << "ID МАШИНЫ:      " << "<" << oneBlock->ints[1] << ">\n";
+                std::wcout <<L "ID МАШИНЫ:      " <<L "<" <<L oneBlock->ints[1] <<L ">\n";
             if ( (mask & 0x048) > 0)
-                cout << "ДАТА ПРОДАЖИ:   " << "<" << oneBlock->strings[0] << ">\n";
+                std::wcout <<L "ДАТА ПРОДАЖИ:   " <<L "<" <<L oneBlock->strings[0] <<L ">\n";
             if ( (mask & 0x04) > 0)
-                cout << "ФИО ПОКУПАТЕЛЯ: " << "<" << oneBlock->strings[1] << ">\n";
+                std::wcout <<L "ФИО ПОКУПАТЕЛЯ: " <<L "<" <<L oneBlock->strings[1] <<L ">\n";
             if ( (mask & 0x02) > 0)
-                cout << "ФИО МЕНЕДЖЕРА:  " << "<" << oneBlock->strings[2] << ">\n";
+                std::wcout <<L "ФИО МЕНЕДЖЕРА:  " <<L "<" <<L oneBlock->strings[2] <<L ">\n";
             if ( (mask & 0x01) > 0)
-                cout << "КОММЕНТАРИЙ:  " << "<" << oneBlock->strings[3] << ">\n";
+                std::wcout <<L "КОММЕНТАРИЙ:  " <<L "<" <<L oneBlock->strings[3] <<L ">\n";
             break;
 
         case TABLE_CLIENTS:
             if ( (mask & 0x81) > 0)
-                cout << "ID:                  " << "<"  << oneBlock->ints[0] << ">\n";
+                std::wcout <<L "ID:                  " <<L "<"  <<L oneBlock->ints[0] <<L ">\n";
             if ( (mask & 0x80) > 0)
-                cout << "СТАТУС ПОСТОЯННОСТИ: " << "<"  << oneBlock->ints[1] << ">\n";
+                std::wcout <<L "СТАТУС ПОСТОЯННОСТИ: " <<L "<"  <<L oneBlock->ints[1] <<L ">\n";
             if ( (mask & 0x40) > 0)
-                cout << "ПРОЦЕНТ СКИДКИ:      " << "<"  << oneBlock->ints[2] << ">\n";
+                std::wcout <<L "ПРОЦЕНТ СКИДКИ:      " <<L "<"  <<L oneBlock->ints[2] <<L ">\n";
             if ( (mask & 0x20) > 0)
-                cout << "СТАЖ ВОЖДЕНИЯ:       " << "<"  << oneBlock->ints[3] << ">\n";
+                std::wcout <<L "СТАЖ ВОЖДЕНИЯ:       " <<L "<"  <<L oneBlock->ints[3] <<L ">\n";
             if ( (mask & 0x10) > 0)
-                cout << "ФИО:                 " << "<"  << oneBlock->strings[0] << ">\n";
+                std::wcout <<L "ФИО:                 " <<L "<"  <<L oneBlock->strings[0] <<L ">\n";
             if ( (mask & 0x08) > 0)
-                cout << "ТЕЛЕФОН:             " << "<"  << oneBlock->strings[1] << ">\n";
+                std::wcout <<L "ТЕЛЕФОН:             " <<L "<"  <<L oneBlock->strings[1] <<L ">\n";
             if ( (mask & 0x04) > 0)
-                cout << "ГОД РОЖДЕНИЯ:        " << "<"  << oneBlock->strings[2] << ">\n";
+                std::wcout <<L "ГОД РОЖДЕНИЯ:        " <<L "<"  <<L oneBlock->strings[2] <<L ">\n";
             if ( (mask & 0x02) > 0)
-                cout << "ПАСПОРТНЫЕ ДАННЫЕ:   " << "<"  << oneBlock->strings[3] << ">\n";
+                std::wcout <<L "ПАСПОРТНЫЕ ДАННЫЕ:   " <<L "<"  <<L oneBlock->strings[3] <<L ">\n";
             if ( (mask & 0x01) > 0)
-                cout << "КОММЕНТАРИЙ:         " << "<"  << oneBlock->strings[4] << ">\n";
+                std::wcout <<L "КОММЕНТАРИЙ:         " <<L "<"  <<L oneBlock->strings[4] <<L ">\n";
             break;
 
         default:
-            cout << "ошибка в базе\n";
+            std::wcout <<L "ошибка в базе\n";
             break;
         }
     }
-    cout << "_________________________________\n";
+    std::wcout <<L "_________________________________\n";
     return;
 }
 
@@ -560,7 +560,7 @@ void Interface::_insert(short curr)
             break;
 
         default:
-            cout << "! неверный аргумент !\n";
+            std::wcout <<L "! неверный аргумент !\n";
             return;
     }
     
@@ -603,7 +603,7 @@ void Interface::_remove(short curr)
         break;
 
     default:
-        cout << "! неверный аргумент !\n";
+        std::wcout <<L "! неверный аргумент !\n";
         return;
     }
 
@@ -612,7 +612,7 @@ void Interface::_remove(short curr)
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
 
-        cout << "Введите " << fields[req.tableID] << ": ";
+        std::wcout <<L "Введите " <<L fields[req.tableID] <<L ": ";
         string str;
         cin >> str;
         req.strings.push_back(str);
@@ -623,27 +623,27 @@ void Interface::_remove(short curr)
         req.ints.push_back(data);
     }
 
-    cout << "Успешность удаления: " << db->REMOVE(req) << "\n";
+    std::wcout <<L "Успешность удаления: " <<L db->REMOVE(req) <<L "\n";
 }
 
 void Interface::_help(vector<string> cmds)
 {
-    cout << "\n_____________справка_________________\n";
-    cout << "2 секции меню:\n";
-    cout << "первая секция:\n";
-    cout << "команда '" << cmds[3] << "' - ВЫБРАТЬ\n";
-    cout << "команда '" << cmds[4] << "' - ВСТАВИТЬ или ПЕРЕЗАПИСАТЬ\n";
-    cout << "команда '" << cmds[5] << "' - АНАЛИТИКА (следующее меню в даной секции аналогично устроено и имеет средства для выбора данных)\n";
-    cout << "команда '" << cmds[5] << "' - УДАЛИТЬ\n-----------------------------\n";
-    cout << "ВТОРАЯ СЕКЦИЯ - ВЫБОР ТАБЛИЦЫ:\n";
-    cout << "команда '" << cmds[3] << "' - МАШИНЫ\n";
-    cout << "команда '" << cmds[4] << "' - МЕНЕДЖЕРЫ\n";
-    cout << "команда '" << cmds[5] << "' - ПРОДАЖИ\n";
-    cout << "команда '" << cmds[6] << "' - КЛИЕНТЫ\n";
-    cout << "-----------------------------------\n";
-    cout << "Общая логика: выбираете команду, потом таблицу \n\n";
-    cout << "для сохранения и выхода '" << cmds[0] << "', для возврата в начальное меню '" << cmds[2] << "', и '" << cmds[1] << "' для просмотра этой справки\n";
-    cout << "___________________________________\n\n";
+    std::wcout <<L "\n_____________справка_________________\n";
+    std::wcout <<L "2 секции меню:\n";
+    std::wcout <<L "первая секция:\n";
+    std::wcout <<L "команда '" <<L cmds[3] <<L "' - ВЫБРАТЬ\n";
+    std::wcout <<L "команда '" <<L cmds[4] <<L "' - ВСТАВИТЬ или ПЕРЕЗАПИСАТЬ\n";
+    std::wcout <<L "команда '" <<L cmds[5] <<L "' - АНАЛИТИКА (следующее меню в даной секции аналогично устроено и имеет средства для выбора данных)\n";
+    std::wcout <<L "команда '" <<L cmds[5] <<L "' - УДАЛИТЬ\n-----------------------------\n";
+    std::wcout <<L "ВТОРАЯ СЕКЦИЯ - ВЫБОР ТАБЛИЦЫ:\n";
+    std::wcout <<L "команда '" <<L cmds[3] <<L "' - МАШИНЫ\n";
+    std::wcout <<L "команда '" <<L cmds[4] <<L "' - МЕНЕДЖЕРЫ\n";
+    std::wcout <<L "команда '" <<L cmds[5] <<L "' - ПРОДАЖИ\n";
+    std::wcout <<L "команда '" <<L cmds[6] <<L "' - КЛИЕНТЫ\n";
+    std::wcout <<L "-----------------------------------\n";
+    std::wcout <<L "Общая логика: выбираете команду, потом таблицу \n\n";
+    std::wcout <<L "для сохранения и выхода '" <<L cmds[0] <<L "', для возврата в начальное меню '" <<L cmds[2] <<L "', и '" <<L cmds[1] <<L "' для просмотра этой справки\n";
+    std::wcout <<L "___________________________________\n\n";
 }
 
 bool Interface::_is_number(const std::string &s)
@@ -660,13 +660,13 @@ bool Interface::_is_number(const std::string &s)
         if (flag)
             stoi(s);
         else
-            cout << "\n<<!НЕ INT!>>\n\n";
+            std::wcout <<L "\n<<L!НЕ INT!>>\n\n";
 
         return flag;
     }
     catch (...)
     {
-        cout << "слишком большое число.... надо меньше\n";
+        std::wcout <<L "слишком большое число.... надо меньше\n";
         return false;
     }
 }
@@ -680,7 +680,7 @@ int Interface::_getNumber(string str)
         if (std::cin.rdbuf()->in_avail() > 0)
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         
-        cout << str;
+        std::wcout <<L str;
         cin >> data;
     } while (!_is_number(data));
 
@@ -694,7 +694,7 @@ string Interface::_getString(string str)
     if (std::cin.rdbuf()->in_avail() > 0)
         cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     
-    cout << str;
+    std::wcout <<L str;
     DEBUGER("clean buffer ", std::numeric_limits<std::streamsize>::max())
     std::getline(std::cin, data);
     DEBUGER(data, "this is your data")

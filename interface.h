@@ -7,6 +7,9 @@
 #include <limits>
 #include <algorithm>
 #include <string>
+#include <iostream>
+#include <locale>
+#include <locale.h>
 
 struct BaseData
 {
