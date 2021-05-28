@@ -441,23 +441,29 @@ void Interface::_showData(vector<rowData *> result, short mask)
             break;
 
         case TABLE_SALES:
-            if ( (mask & 0x08) > 0)
-                cout << "ID:           " << "<" << oneBlock->ints[0] << ">\n";
+            if ( (mask & 0x20) > 0)
+                cout << "ID:             " << "<" << oneBlock->ints[0] << ">\n";
+            if ( (mask & 0x10) > 0)
+                cout << "ID МАШИНЫ:      " << "<" << oneBlock->ints[1] << ">\n";
+            if ( (mask & 0x048) > 0)
+                cout << "ДАТА ПРОДАЖИ:   " << "<" << oneBlock->strings[0] << ">\n";
             if ( (mask & 0x04) > 0)
-                cout << "ID МАШИНЫ:    " << "<" << oneBlock->ints[1] << ">\n";
+                cout << "ФИО ПОКУПАТЕЛЯ: " << "<" << oneBlock->strings[1] << ">\n";
             if ( (mask & 0x02) > 0)
-                cout << "ДАТА ПРОДАЖИ: " << "<" << oneBlock->strings[0] << ">\n";
+                cout << "ФИО МЕНЕДЖЕРА:  " << "<" << oneBlock->strings[2] << ">\n";
             if ( (mask & 0x01) > 0)
-                cout << "КОММЕНТАРИЙ:  " << "<" << oneBlock->strings[1] << ">\n";
+                cout << "КОММЕНТАРИЙ:  " << "<" << oneBlock->strings[3] << ">\n";
             break;
 
         case TABLE_CLIENTS:
-            if ( (mask & 0x80) > 0)
+            if ( (mask & 0x81) > 0)
                 cout << "ID:                  " << "<"  << oneBlock->ints[0] << ">\n";
-            if ( (mask & 0x40) > 0)
+            if ( (mask & 0x80) > 0)
                 cout << "СТАТУС ПОСТОЯННОСТИ: " << "<"  << oneBlock->ints[1] << ">\n";
-            if ( (mask & 0x20) > 0)
+            if ( (mask & 0x40) > 0)
                 cout << "ПРОЦЕНТ СКИДКИ:      " << "<"  << oneBlock->ints[2] << ">\n";
+            if ( (mask & 0x20) > 0)
+                cout << "СТАЖ ВОЖДЕНИЯ:       " << "<"  << oneBlock->ints[3] << ">\n";
             if ( (mask & 0x10) > 0)
                 cout << "ФИО:                 " << "<"  << oneBlock->strings[0] << ">\n";
             if ( (mask & 0x08) > 0)
@@ -555,7 +561,6 @@ void Interface::_insert(short curr)
             return;
     }
     
-    db->REMOVE(req);
     db->ADD(req);
     ///////////////////////////////////////////////////////////////////
 }
